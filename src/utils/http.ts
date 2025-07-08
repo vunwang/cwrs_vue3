@@ -29,7 +29,7 @@ const StatusCodeMessage: Record<number, string> = {
 
 /** 创建 axios 实例 */
 const http: AxiosInstance = axios.create({
-  baseURL: import.meta.env.VITE_API_PREFIX,
+  baseURL: import.meta.env.VITE_API_BASE_URL,
   timeout: 30 * 1000
 })
 
@@ -43,6 +43,12 @@ http.interceptors.request.use(
         config.headers = {}
       }
       config.headers.token = token
+      // 假设菜单ID存储在localStorage中
+      const menuId = localStorage.getItem('menuId');
+      if (menuId) {
+        // 将菜单ID塞入请求头中
+        config.headers.menuId = menuId;
+      }
     }
     return config
   },
@@ -119,4 +125,24 @@ const post = <T = any>(url: string, params?: object, config?: AxiosRequestConfig
   })
 }
 
-export default { get, post, request }
+/** PUT 请求 */
+const put = <T = any>(url: string, params?: object, config?: AxiosRequestConfig): Promise<ApiRes<T>> => {
+  return request({
+    method: 'put',
+    url,
+    data: params,
+    ...config
+  })
+}
+
+/** DEL 请求 */
+const del = <T = any>(url: string, params?: object, config?: AxiosRequestConfig): Promise<ApiRes<T>> => {
+  return request({
+    method: 'delete',
+    url,
+    params,
+    ...config
+  })
+}
+
+export default { get, post, put, del, request }

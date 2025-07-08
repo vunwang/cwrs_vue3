@@ -1,5 +1,7 @@
 /** Token 存储键名 */
 const TOKEN_KEY = 'token'
+/** MenuId 存储键名 */
+const MENU_ID = 'menuId'
 
 /**
  * 检查用户是否已登录
@@ -36,4 +38,30 @@ const clearToken = () => {
   localStorage.removeItem(TOKEN_KEY)
 }
 
-export { isLogin, getToken, setToken, clearToken }
+/**
+ * 获取用户 MenuId
+ * @description 从 localStorage 中获取存储的 menuId
+ * @returns {string | null} 用户 menuId，未登录时返回 null
+ */
+const getMenuId = () => {
+  return localStorage.getItem(MENU_ID)
+}
+
+/**
+ * 设置用户 MenuId
+ * @description 将用户 menuId 存储到 localStorage 中
+ * @param menuId - 用户 menuId
+ */
+const setMenuId = (menuId: string) => {
+  localStorage.setItem(MENU_ID, menuId)
+}
+
+/**
+ * 清除用户 MenuId
+ * @description 从 localStorage 中移除用户 menuId
+ */
+const clearMenuId = () => {
+  localStorage.removeItem(MENU_ID)
+}
+
+export { isLogin, getToken, setToken, clearToken, getMenuId, setMenuId, clearMenuId }
