@@ -54,7 +54,7 @@ export interface MenuItem {
   component: string
   hidden: boolean
   icon: string
-  id: string
+  menuId: string
   keepAlive: boolean
   parentId: string
   path: string
@@ -71,7 +71,7 @@ export interface MenuItem {
 }
 
 export interface MenuOptionsItem {
-  id: string
+  menuId: string
   title: string
   children: MenuOptionsItem[]
 }

@@ -6,6 +6,7 @@
 import { onUnmounted, ref } from 'vue'
 import type { Handler } from 'mitt'
 import mitt from 'mitt'
+import { setMenuId,getMenuId } from '@/utils/auth'
 import type { RouteLocationNormalized } from 'vue-router'
 
 // 事件类型定义
@@ -34,6 +35,7 @@ export function setRouteEmitter(to: RouteLocationNormalized, from?: RouteLocatio
   const event: RouteChangeEvent = { to, from }
   emitter.emit(ROUTE_CHANGE_KEY, event)
   latestRoute.value = to
+  setMenuId(to.meta.menuId)
 }
 
 /**

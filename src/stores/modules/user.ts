@@ -4,7 +4,7 @@ import { defineStore } from 'pinia'
 import { computed, reactive, ref } from 'vue'
 import { resetRouter } from '@/router'
 import { type UserInfo, getUserInfo as getUserInfoApi, login as loginApi, logout as logoutApi } from '@/apis/user'
-import { clearToken, getToken, setToken } from '@/utils/auth'
+import {clearMenuId, clearToken, getToken, setToken} from '@/utils/auth'
 
 /** 登录参数接口 */
 interface LoginParams {
@@ -40,6 +40,7 @@ const storeSetup = () => {
   const resetToken = () => {
     token.value = ''
     clearToken()
+    clearMenuId()
   }
 
   /**

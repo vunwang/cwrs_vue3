@@ -60,7 +60,7 @@ function onCountDownTime() {
     if (countDownTime.value) {
       countDownTime.value--
     } else {
-      // back()
+      back()
       clearInterval(timer)
     }
   }, 1000)

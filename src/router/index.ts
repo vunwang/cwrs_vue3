@@ -10,17 +10,6 @@ const Layout = () => import('@/layout/index.vue')
 /** 基础路由配置 */
 const baseRoutes: RouteRecordRaw[] = [
   {
-    path: '/redirect',
-    component: Layout,
-    meta: { hidden: true },
-    children: [
-      {
-        path: '/redirect/:path(.*)',
-        component: () => import('@/views/redirect/index.vue')
-      }
-    ]
-  },
-  {
     path: '/login',
     component: () => import('@/views/login/index.vue'),
     meta: { hidden: true }
@@ -54,6 +43,7 @@ const homeRoute: RouteRecordRaw = {
       component: () => import('@/views/home/index.vue'),
       name: 'HomeIndex',
       meta: {
+        menuId: 'home',
         title: '首页',
         icon: 'icon-dashboard',
         svgIcon: 'menu-home',
@@ -70,7 +60,7 @@ export const constantRoutes: RouteRecordRaw[] = [...baseRoutes, ...errorRoutes, 
 
 /** 创建路由实例 */
 const router = createRouter({
-  history: createWebHashHistory(import.meta.env.BASE_URL),
+  history: createWebHashHistory(import.meta.env.VITE_API_BASE_URL),
   routes: constantRoutes,
   scrollBehavior: () => ({ left: 0, top: 0 })
 })

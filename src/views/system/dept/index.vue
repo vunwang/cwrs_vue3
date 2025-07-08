@@ -100,7 +100,7 @@ const {
   select,
   selectAll,
   fixed
-} = useTable(() => getDeptList(), {
+} = useTable(() => getDeptList(form), {
   immediate: true,
   onSuccess: () => {
     nextTick(() => {

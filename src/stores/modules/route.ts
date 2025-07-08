@@ -105,6 +105,7 @@ const formatAsyncRoutes = (menus: MenuItem[]) => {
       component: item.component ? transformComponentView(item.component) : undefined,
       redirect: item.redirect,
       meta: {
+        menuId: item.menuId, // 菜单 ID
         hidden: item.hidden, // 是否在菜单中隐藏
         keepAlive: item.keepAlive, // 是否缓存该路由
         title: item.title, // 路由标题，用于显示在菜单和标签页

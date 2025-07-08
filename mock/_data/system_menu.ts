@@ -2,7 +2,7 @@ import type { MockSystemMenuItem } from './_type'
 
 const data: MockSystemMenuItem[] = [
   {
-    id: '08',
+    menuId: '08',
     parentId: '',
     path: '/system',
     component: 'Layout',
@@ -18,7 +18,7 @@ const data: MockSystemMenuItem[] = [
     breadcrumb: true,
     children: [
       {
-        id: '0801',
+        menuId: '0801',
         parentId: '08',
         path: '/system/user',
         component: 'system/user/index',
@@ -40,7 +40,7 @@ const data: MockSystemMenuItem[] = [
         affix: false
       },
       {
-        id: '0802',
+        menuId: '0802',
         parentId: '08',
         path: '/system/role',
         component: 'system/role/index',
@@ -62,7 +62,7 @@ const data: MockSystemMenuItem[] = [
         affix: false
       },
       {
-        id: '0803',
+        menuId: '0803',
         parentId: '08',
         path: '/system/dept',
         component: 'system/dept/index',
@@ -84,7 +84,7 @@ const data: MockSystemMenuItem[] = [
         affix: false
       },
       {
-        id: '0804',
+        menuId: '0804',
         parentId: '08',
         path: '/system/menu',
         component: 'system/menu/index',
@@ -106,7 +106,7 @@ const data: MockSystemMenuItem[] = [
         affix: false
       },
       {
-        id: '0805',
+        menuId: '0805',
         parentId: '08',
         path: '/system/dict',
         component: 'system/dict/index',
@@ -128,7 +128,7 @@ const data: MockSystemMenuItem[] = [
         affix: false
       },
       {
-        id: '0806',
+        menuId: '0806',
         parentId: '08',
         path: '/system/account',
         component: 'system/account/index',

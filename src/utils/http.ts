@@ -2,7 +2,7 @@ import axios from 'axios'
 import type { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios'
 import { Message, Notification } from '@arco-design/web-vue'
 import NProgress from 'nprogress'
-import { getToken } from '@/utils/auth'
+import { getToken,getMenuId } from '@/utils/auth'
 import 'nprogress/nprogress.css'
 import router from '@/router'
 
@@ -30,7 +30,10 @@ const StatusCodeMessage: Record<number, string> = {
 /** 创建 axios 实例 */
 const http: AxiosInstance = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL,
-  timeout: 30 * 1000
+  timeout: 30 * 1000,
+  headers: {
+    'Content-Type': 'application/json'
+  }
 })
 
 // 请求拦截器
@@ -39,16 +42,13 @@ http.interceptors.request.use(
     NProgress.start()
     const token = getToken()
     if (token) {
-      if (!config.headers) {
-        config.headers = {}
-      }
-      config.headers.token = token
-      // 假设菜单ID存储在localStorage中
-      const menuId = localStorage.getItem('menuId');
-      if (menuId) {
-        // 将菜单ID塞入请求头中
-        config.headers.menuId = menuId;
-      }
+      config.headers['Token'] = token
+    }
+    // 菜单ID存储在localStorage中
+    const menuId = getMenuId();
+    if (menuId) {
+      // 将菜单ID塞入请求头中
+      config.headers['Menu-ID'] = menuId;
     }
     return config
   },
@@ -67,7 +67,6 @@ http.interceptors.response.use(
     // token失效
     if (code === 401) {
       NProgress.done()
-      // Message.error('token失效')
       router.replace('/login')
       return Promise.reject(new Error('token失效'))
     }
