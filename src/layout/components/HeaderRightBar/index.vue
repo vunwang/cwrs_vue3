@@ -120,7 +120,7 @@ const userMenuItems = [
     label: '项目地址',
     icon: 'icon-github',
     iconColor: 'success',
-    onClick: () => window.open('https://gitee.com/lin0716/gi-demo')
+    onClick: () => window.open('https://gitee.com/open-source-project_7/cwrs_vue3.git')
   },
   {
     key: 'password',

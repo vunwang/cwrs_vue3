@@ -21,7 +21,7 @@
 ```
 
 ### 代码仓库
-- gitee地址：<a href="" target="_blank">cwrs_vue3</a>
+- gitee地址：<a href="https://gitee.com/open-source-project_7/cwrs_vue3.git" target="_blank">cwrs_vue3</a>
 
 [//]: # (- github地址：<a href="" target="_blank">cwrs_vue3</a>)
 

@@ -86,10 +86,10 @@ type TabItem = { label: string, value: App.SettingConfig['tab'] }
 /** 页签模式选项 */
 const TAB_MODE_OPTIONS: TabItem[] = [
   { label: '卡片', value: 'card' },
-  { label: '间隔卡片', value: 'card-gutter' },
-  { label: '圆角', value: 'rounded' },
-  { label: '自定义1', value: 'custom1' },
-  { label: '自定义2', value: 'custom2' }
+  { label: '椭圆', value: 'rounded' },
+  { label: '谷歌', value: 'custom1' },
+  { label: '圆角', value: 'custom2' },
+  { label: '间隔卡片', value: 'card-gutter' }
 ]
 
 type AnimateItem = { label: string, value: App.SettingConfig['animate'] }
