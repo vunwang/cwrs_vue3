@@ -7,14 +7,14 @@
       <a-col :xs="24" :sm="24" :md="14" :lg="16" :xl="16" :xxl="18">
         <a-space size="medium">
           <a-avatar :size="68">
-            <img :src="userStore.avatar" />
+            <img v-if ="userStore.avatar" :src="userStore.avatar" />
+            <img v-else src="@/assets/images/logo.png" />
           </a-avatar>
           <div class="welcome">
             <p class="hello">
               <span>{{ goodTimeText() }}！{{ userStore.name }}，开始您一天的工作吧！</span>
-              <img class="gi-demo-star" src="https://gitee.com/lin0716/gi-demo/badge/star.svg?theme=dark">
             </p>
-            <p>今日阴转大雨，15℃ - 25℃，出门记得带伞哦。</p>
+            <p>今日阴转大雨，25℃ - 38℃，出门记得带伞哦。</p>
           </div>
         </a-space>
       </a-col>

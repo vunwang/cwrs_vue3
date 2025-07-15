@@ -7,7 +7,7 @@
       :class="`animated-fade-up-${index}`" style="overflow: hidden">
       <template #avatar>
         <a-avatar>
-          <img src="https://img0.baidu.com/it/u=2746352008,2041591833&fm=253&fmt=auto&app=138&f=JPEG?w=360&h=360" />
+          <img src="@/assets/images/logo.png" />
         </a-avatar>
       </template>
       <template #content>

@@ -11,6 +11,7 @@
   background: var(--color-bg-1);
   img {
     width: 100%;
+    height: 402px;
   }
 }
 </style>

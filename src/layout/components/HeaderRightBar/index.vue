@@ -48,9 +48,10 @@
         <a-row align="center" :wrap="false" class="user">
           <!-- 管理员头像 -->
           <a-avatar :size="32">
-            <img :src="userStore.avatar" />
+            <img v-if ="userStore.avatar" :src="userStore.avatar" />
+            <img v-else src="@/assets/images/logo.png" />
           </a-avatar>
-          <span class="username">{{ userStore.name }}</span>
+          <span class="username">{{ userStore.nickName }}</span>
           <icon-down />
         </a-row>
 
@@ -96,6 +97,7 @@ const router = useRouter()
 
 /** 状态管理 */
 const userStore = useUserStore()
+console.log(userStore)
 
 /** 响应式断点 */
 const { breakpoint } = useBreakpoint()

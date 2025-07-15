@@ -5,8 +5,8 @@ import type { MenuItem } from '@/apis/system'
 export type * from './type'
 
 /** 登录 */
-export function login(data: { username: string, password: string }) {
-  return http.post<T.Login>('/user/login', data)
+export function login(data: { account: string, password: string }) {
+  return http.get('/sysLogin/login', data)
 }
 
 /** 退出登录 */
@@ -16,7 +16,7 @@ export function logout() {
 
 /** 获取用户信息 */
 export const getUserInfo = () => {
-  return http.get<T.UserInfo>('/user/getUserInfo')
+  return http.get('/sysLogin/getUserInfo')
 }
 
 /** 获取用户路由信息 */

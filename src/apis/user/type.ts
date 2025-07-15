@@ -1,11 +1,10 @@
 export interface UserInfo {
-  id: string
-  nickname: string
+  userId: string
+  userName: string
+  userPhone: string
+  nickName: string
   avatar: string
-  roles: string[]
+  roleId: string
+  deptId: string
   permissions: string[]
-}
-
-export interface Login {
-  token: string
 }

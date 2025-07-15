@@ -38,7 +38,7 @@ export default defineMock([
       if (obj.item) {
         return resultSuccess(obj.item)
       } else {
-        return resultError(null, '没有该部门', 400)
+        return resultError(null, '没有该菜单', 400)
       }
     }
   },

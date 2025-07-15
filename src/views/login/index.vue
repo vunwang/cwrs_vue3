@@ -3,36 +3,33 @@
     <a-row align="stretch" class="login-box">
       <a-col :xs="0" :sm="12" :md="15">
         <div class="login-left">
-          <img class="login-left__img" src="@/assets/svgs/login-img.svg" />
+          <img class="login-left__img" src="@/assets/svgs/login-img.svg"/>
         </div>
       </a-col>
       <a-col :xs="24" :sm="12" :md="9">
         <div class="login-right">
           <a-form ref="formRef" :size="isMobile() ? 'large' : 'medium'" :model="form" :rules="rules"
-            :style="{ width: '84%' }" :label-col-style="{ display: 'none' }" :wrapper-col-style="{ flex: 1 }">
+                  :style="{ width: '84%' }" :label-col-style="{ display: 'none' }" :wrapper-col-style="{ flex: 1 }">
             <h3 class="login-right__title">
-              <img class="logo" src="@/assets/images/logo.png" /><span>Admin Vue</span>
+              <img class="logo" src="@/assets/images/logo.png"/><span>Admin Vue</span>
             </h3>
-            <a-form-item field="username">
-              <a-input v-model="form.username" placeholder="账号 admin/user" allow-clear>
-                <template #prefix><icon-user :stroke-width="1" :style="{ fontSize: '20px' }" /></template>
+            <a-form-item field="account">
+              <a-input v-model="form.account" placeholder="账号" allow-clear>
+                <template #prefix>
+                  <icon-user :stroke-width="1" :style="{ fontSize: '20px' }"/>
+                </template>
               </a-input>
             </a-form-item>
             <a-form-item field="password">
               <a-input-password v-model="form.password" placeholder="密码" allow-clear>
-                <template #prefix><icon-lock :stroke-width="1" :style="{ fontSize: '20px' }" /></template>
+                <template #prefix>
+                  <icon-lock :stroke-width="1" :style="{ fontSize: '20px' }"/>
+                </template>
               </a-input-password>
-            </a-form-item>
-            <a-form-item>
-              <a-row justify="space-between" align="center" class="w-full">
-                <a-checkbox v-model="checked">记住密码</a-checkbox>
-                <a-link>忘记密码</a-link>
-              </a-row>
             </a-form-item>
             <a-form-item>
               <a-space direction="vertical" fill class="w-full">
                 <a-button type="primary" size="large" long :loading="loading" @click="login">登录</a-button>
-                <a-button type="text" size="large" long class="register-btn">注册账号</a-button>
               </a-space>
             </a-form-item>
           </a-form>
@@ -47,35 +44,35 @@
 </template>
 
 <script setup lang="ts">
-import { type FormInstance, Message } from '@arco-design/web-vue'
+import {type FormInstance, Message} from '@arco-design/web-vue'
 import LoginBg from './components/LoginBg/index.vue'
-import { useTabsStore, useUserStore } from '@/stores'
-import { useLoading } from '@/hooks'
+import {useTabsStore, useUserStore} from '@/stores'
+import {useLoading} from '@/hooks'
 import * as Regexp from '@/utils/regexp'
-import { isMobile } from '@/utils'
+import {isMobile} from '@/utils'
 
-defineOptions({ name: 'Login' })
+defineOptions({name: 'Login'})
 const router = useRouter()
 const userStore = useUserStore()
 const tabsStore = useTabsStore()
 
 const form = reactive({
-  username: 'admin',
+  account: 'admin',
   password: '123456'
 })
 
 const rules: FormInstance['rules'] = {
-  username: [{ required: true, message: '请输入账号' }],
+  account: [{required: true, message: '请输入账号'}],
   password: [
-    { required: true, message: '请输入密码' },
-    { match: Regexp.Password, message: '输入密码格式不正确' }
+    {required: true, message: '请输入密码'},
+    {match: Regexp.Password, message: '输入密码格式不正确'}
   ]
 }
 
 // 记住密码
 const checked = ref(false)
 // 登录加载
-const { loading, setLoading } = useLoading()
+const {loading, setLoading} = useLoading()
 const errorMessage = ref('')
 
 const formRef = useTemplateRef('formRef')
@@ -87,7 +84,7 @@ const login = async () => {
     setLoading(true)
     await userStore.login(form)
     tabsStore.reset()
-    const { redirect, ...othersQuery } = router.currentRoute.value.query
+    const {redirect, ...othersQuery} = router.currentRoute.value.query
     router.push({
       path: (redirect as string) || '/',
       query: {
