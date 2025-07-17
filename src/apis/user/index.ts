@@ -9,6 +9,11 @@ export function login(data: { account: string, password: string }) {
   return http.get('/sysLogin/login', data)
 }
 
+/** 获取用户身份 */
+export function getUserIdentity(data: { account: string }) {
+  return http.get('/sysLogin/getUserIdentity', data)
+}
+
 /** 退出登录 */
 export function logout() {
   return http.post('/user/logout')
@@ -21,5 +26,5 @@ export const getUserInfo = () => {
 
 /** 获取用户路由信息 */
 export const getUserRoutes = () => {
-  return http.get<MenuItem[]>('/user/getUserRoutes')
+  return http.get<MenuItem[]>('/sysMenu/getMenuTreeByRoleId')
 }

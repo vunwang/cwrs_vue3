@@ -14,7 +14,7 @@
               <img class="logo" src="@/assets/images/logo.png"/><span>Admin Vue</span>
             </h3>
             <a-form-item field="account">
-              <a-input v-model="form.account" placeholder="账号" allow-clear>
+              <a-input v-model="form.account" placeholder="账号" @change="getIdentity" allow-clear>
                 <template #prefix>
                   <icon-user :stroke-width="1" :style="{ fontSize: '20px' }"/>
                 </template>
@@ -26,6 +26,13 @@
                   <icon-lock :stroke-width="1" :style="{ fontSize: '20px' }"/>
                 </template>
               </a-input-password>
+            </a-form-item>
+            <a-form-item field="identity" v-if="userStore.identityOptions.length > 1">
+              <a-select v-model="form.identity" :options="userStore.identityOptions" placeholder="身份" allow-clear>
+                <template #prefix>
+                  <icon-user-group :stroke-width="1" :style="{ fontSize: '20px' }"/>
+                </template>
+              </a-select>
             </a-form-item>
             <a-form-item>
               <a-space direction="vertical" fill class="w-full">
@@ -56,9 +63,13 @@ const router = useRouter()
 const userStore = useUserStore()
 const tabsStore = useTabsStore()
 
+userStore.getUserIdentity({account: "admin"})
 const form = reactive({
   account: 'admin',
-  password: '123456'
+  password: '123456',
+  identity: '',
+  deptId: '',
+  roleId: ''
 })
 
 const rules: FormInstance['rules'] = {
@@ -66,7 +77,8 @@ const rules: FormInstance['rules'] = {
   password: [
     {required: true, message: '请输入密码'},
     {match: Regexp.Password, message: '输入密码格式不正确'}
-  ]
+  ],
+  identity: [{required: true, message: '请选择身份'}],
 }
 
 // 记住密码
@@ -75,6 +87,16 @@ const checked = ref(false)
 const {loading, setLoading} = useLoading()
 const errorMessage = ref('')
 
+// 点击登录
+const getIdentity = async () => {
+  try {
+    setLoading(true)
+    await userStore.getUserIdentity({account: form.account})
+  } finally {
+    setLoading(false)
+  }
+}
+
 const formRef = useTemplateRef('formRef')
 // 点击登录
 const login = async () => {
@@ -82,6 +104,14 @@ const login = async () => {
     const valid = await formRef.value?.validate()
     if (valid) return
     setLoading(true)
+
+    let identityArr = userStore.identityOptions[0].value.split(',')
+    if (form.identity) {
+      identityArr = form.identity.split(',')
+    }
+    form.deptId = identityArr[0]
+    form.roleId = identityArr[1]
+
     await userStore.login(form)
     tabsStore.reset()
     const {redirect, ...othersQuery} = router.currentRoute.value.query

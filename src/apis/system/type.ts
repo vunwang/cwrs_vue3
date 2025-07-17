@@ -60,7 +60,6 @@ export interface MenuItem {
   path: string
   permission: string
   redirect: string
-  roles: string[]
   showInTabs: boolean
   sort: number
   status: Status

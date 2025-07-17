@@ -3,14 +3,24 @@
 import {defineStore} from 'pinia'
 import {computed, reactive, ref} from 'vue'
 import {resetRouter} from '@/router'
-import {getUserInfo as getUserInfoApi, login as loginApi, logout as logoutApi} from '@/apis/user'
+import {
+    getUserIdentity as getUserIdentityApi,
+    getUserInfo as getUserInfoApi,
+    login as loginApi,
+    logout as logoutApi
+} from '@/apis/user'
 import {clearMenuId, clearToken, getToken, setToken} from '@/utils/auth'
 
 /** 登录参数接口 */
 interface LoginParams {
     account: string
     password: string
-    // code?: string
+    deptId: string
+    roleId: string
+}
+
+interface IdentityParams {
+    account: string
 }
 
 /** 用户 Store 的核心设置逻辑 - 管理用户相关的状态和操作 */
@@ -45,6 +55,9 @@ const storeSetup = () => {
     /** 用户权限列表 */
     const permissions = ref<string[]>([])
 
+    /** 用户身份信息 */
+    const identityOptions = ref<any[]>([])
+
     /** 重置用户令牌 - 清除令牌并重置路由权限标志 */
     const resetToken = () => {
         token.value = ''
@@ -65,6 +78,22 @@ const storeSetup = () => {
             token.value = res.data
         } catch (error) {
             console.error('登录失败:', error)
+            throw error
+        }
+    }
+
+    /**
+     * 获取用户身份信息
+     * @description 获取用户身份信息
+     * @param {IdentityParams} params - 登录参数
+     * @throws {Error} 当失败时抛出错误
+     */
+    const getUserIdentity = async (params: IdentityParams): Promise<void> => {
+        try {
+            const res = await getUserIdentityApi(params)
+            identityOptions.value = res.data
+        } catch (error) {
+            console.error('获取用户身份信息失败:', error)
             throw error
         }
     }
@@ -105,6 +134,7 @@ const storeSetup = () => {
                 roleId,
                 deptId,
                 avatar,
+                permissions: userPermissions
             } = res.data
 
             // 更新用户基本信息
@@ -144,9 +174,11 @@ const storeSetup = () => {
         roleId,
         deptId,
         permissions,
+        identityOptions,
         login,
         logout,
         getInfo,
+        getUserIdentity,
         resetToken,
         editToken
     }
