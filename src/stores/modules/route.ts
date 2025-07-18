@@ -68,7 +68,7 @@ const transformComponentView = (component: string) => {
 /**
  * 格式化异步路由配置
  * @description 处理后端返回的菜单数据，转换为路由配置
- * @param {MenuItem[]} menus - 后端返回的菜单数据（已经过权限过滤）
+ * @param {any[]} menus - 后端返回的菜单数据（已经过权限过滤）
  * @returns {RouteRecordRaw[]} 返回格式化后的路由配置数组
  *
  * @remarks
@@ -85,7 +85,7 @@ const transformComponentView = (component: string) => {
  *   }
  * ])
  */
-const formatAsyncRoutes = (menus: MenuItem[]) => {
+const formatAsyncRoutes = (menus: any[]) => {
   if (!menus.length) return []
 
   // 对顶层菜单进行排序

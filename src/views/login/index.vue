@@ -69,7 +69,8 @@ const form = reactive({
   password: '123456',
   identity: '',
   deptId: '',
-  roleId: ''
+  roleId: '',
+  roleCode: '',
 })
 
 const rules: FormInstance['rules'] = {
@@ -111,6 +112,8 @@ const login = async () => {
     }
     form.deptId = identityArr[0]
     form.roleId = identityArr[1]
+    form.roleCode = identityArr[2]
+    form.identity = undefined
 
     await userStore.login(form)
     tabsStore.reset()

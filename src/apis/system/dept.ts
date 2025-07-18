@@ -3,10 +3,10 @@ import http from '@/utils/http'
 
 /** 获取部门数据 */
 export function getDeptList(params?: T.DeptParams) {
-  return http.get<T.DeptItem[]>('/system/dept/getDeptList',params)
+  return http.get('/system/dept/getDeptList',params)
 }
 
 /** 获取部门详情 */
 export function getDeptDetail(params: { id: string }) {
-  return http.get<T.DeptItem>('/system/dept/getDeptDetail', params)
+  return http.get('/system/dept/getDeptDetail', params)
 }

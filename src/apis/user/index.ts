@@ -26,5 +26,5 @@ export const getUserInfo = () => {
 
 /** 获取用户路由信息 */
 export const getUserRoutes = () => {
-  return http.get<MenuItem[]>('/sysMenu/getMenuTreeByRoleId')
+  return http.get('/sysMenu/getMenuTreeByRoleId')
 }
