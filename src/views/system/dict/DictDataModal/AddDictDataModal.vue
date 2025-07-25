@@ -3,15 +3,21 @@
     :modal-style="{ maxWidth: '520px' }" @before-ok="save" @close="close">
     <a-spin :loading="loading" class="w-full">
       <a-form ref="formRef" :model="form" :rules="rules" size="medium" auto-label-width>
-        <a-form-item label="字典名" field="name">
-          <a-input v-model.trim="form.name" placeholder="请输入字典名" allow-clear :max-length="10"></a-input>
+        <a-form-item label="字典名" field="itemName">
+          <a-input v-model.trim="form.itemName" placeholder="请输入字典名" allow-clear :max-length="20"></a-input>
         </a-form-item>
-        <a-form-item label="字典值" field="value">
-          <a-input v-model.trim="form.value" placeholder="请输入字典值" allow-clear :max-length="10"></a-input>
+        <a-form-item label="字典值" field="itemValue">
+          <a-input v-model.trim="form.itemValue" placeholder="请输入字典值" allow-clear :max-length="20"></a-input>
         </a-form-item>
-        <a-form-item label="状态" field="status">
-          <a-switch v-model="form.status" type="round" :checked-value="1" :unchecked-value="0" checked-text="正常"
-            unchecked-text="禁用" />
+        <a-form-item label="描述" field="desc">
+          <a-textarea v-model.trim="form.desc" placeholder="请填写描述" :max-length="200" show-word-limit
+                      :auto-size="{ minRows: 3, maxRows: 5 }"/>
+        </a-form-item>
+        <a-form-item label="排序" field="itemSort">
+          <a-input-number v-model="form.itemSort" placeholder="请输入排序" :min="1" mode="button" style="width: 120px" />
+        </a-form-item>
+        <a-form-item label="状态" field="itemStatus">
+          <GiSwitch v-model="form.itemStatus" :dict="sysStatus" />
         </a-form-item>
       </a-form>
     </a-spin>
@@ -19,47 +25,60 @@
 </template>
 
 <script setup lang="ts">
+import _ from 'lodash';
 import { type FormInstance, Message } from '@arco-design/web-vue'
-import { getDictDataDetail } from '@/apis/system'
+import { getDictItemDetail, addDictItem, editDictItem } from '@/apis/system'
 import { useResetReactive } from '@/hooks'
+import * as Regexp from "@/utils/regexp";
 
 const emit = defineEmits<{
   (e: 'save-success'): void
 }>()
 
 const formRef = useTemplateRef('formRef')
-const dictDataId = ref('')
-const isEdit = computed(() => !!dictDataId.value)
+const dictItemId = ref('')
+const isEdit = computed(() => !!dictItemId.value)
 const title = computed(() => (isEdit.value ? '编辑字典数据' : '新增字典数据'))
 const visible = ref(false)
 const loading = ref(false)
 
+import {useDictStore} from "@/stores";
+const dictStore = useDictStore()
+const sysStatus = dictStore.getDictOptions('sys_status')
+
 const [form, resetForm] = useResetReactive({
-  name: '',
-  value: '',
-  status: 1
+  dictItemId: undefined,
+  dictCode: undefined,
+  itemName: undefined,
+  itemValue: undefined,
+  itemStatus: '1',
+  itemSort: 1,
+  desc: undefined
 })
 
 const rules: FormInstance['rules'] = {
-  name: [{ required: true, message: '请输入字典名' }],
-  value: [
+  itemName: [{ required: true, message: '请输入字典名' }],
+  itemValue: [
     { required: true, message: '请输入字典值' },
-    { match: /^[a-zA-Z0-9_]*$/, message: '格式不对！只能包含英文数字下划线' }
+    { match: Regexp.EnNumAndUnderline, message: '格式不对！只能包含英文数字下划线' }
   ],
-  status: [{ required: true }]
+  itemSort: [{ required: true, message: '请输入排序' }],
+  itemStatus: [{ required: true }]
 }
 
-const add = () => {
-  dictDataId.value = ''
+const add = (dictCode: string) => {
+  dictItemId.value = ''
+  form.dictCode = dictCode
   visible.value = true
 }
 
-const edit = async (data: { id: string, code: string }) => {
+const edit = async (id: string) => {
   visible.value = true
-  dictDataId.value = data.id
+  dictItemId.value = id
   loading.value = true
-  const res = await getDictDataDetail(data)
-  Object.assign(form, res.data)
+  const res = await getDictItemDetail({dictItemId: id})
+  // 只复制 res.data 中与 form 已有字段相同的属性
+  Object.assign(form, _.pick(res.data, Object.keys(form)))
   loading.value = false
 }
 
@@ -72,13 +91,11 @@ const save = async () => {
   try {
     const valid = await formRef.value?.validate()
     if (valid) return false
-    const res = await new Promise((resolve) => setTimeout(() => resolve(true), 300))
+    const res = isEdit.value ? await editDictItem(form) : await addDictItem(form)
     if (res) {
-      Message.success('模拟保存成功')
+      Message.success(res.msg)
       emit('save-success')
       return true
-    } else {
-      return false
     }
   } catch (error) {
     return false

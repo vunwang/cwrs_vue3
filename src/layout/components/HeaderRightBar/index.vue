@@ -97,7 +97,6 @@ const router = useRouter()
 
 /** 状态管理 */
 const userStore = useUserStore()
-console.log(userStore)
 
 /** 响应式断点 */
 const { breakpoint } = useBreakpoint()

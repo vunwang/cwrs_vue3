@@ -104,7 +104,7 @@ defineOptions({ name: 'AboutIndex' })
 
 ```js
 {
-  path: '/about/index',
+  path: '/about/index.vue',
   name: 'AboutIndex', // 检查name是否一致
   component: () => import('@/views/about/index.vue')
 }
@@ -480,7 +480,7 @@ export function deleteUser(data: { id: string }) {
 **`以上命名规范可以确保 api 命名不会冲突，加上模块名能快速定位以及更加方便维护`**
 
 ~~~ts
-// @/apis/index.ts
+// @/apis/index.vue.ts
 export * from './user'
 export * from './user/type'
 ~~~

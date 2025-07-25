@@ -9,7 +9,7 @@ export function useRole() {
   const getRoleList = async () => {
     try {
       loading.value = true
-      const res = await getRoleListApi({ page: 1, size: 99 })
+      const res = await getRoleListApi({ pageNum: 0, pageSize: 0 })
       roleList.value = res.data.records.filter((i) => i.status === 1)
       total.value = res.data.total
     } finally {

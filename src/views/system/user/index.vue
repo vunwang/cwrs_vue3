@@ -68,12 +68,12 @@
           </a-table-column>
           <a-table-column title="状态" :width="100" align="center">
             <template #cell="{ record }">
-              <GiCellStatus :status="record.status"></GiCellStatus>
+              <GiCellTag :status="record.status"></GiCellTag>
             </template>
           </a-table-column>
           <a-table-column title="性别" data-index="gender" :width="80" align="center">
             <template #cell="{ record }">
-              <GiCellGender :gender="record.gender"></GiCellGender>
+              <GiCellTag :gender="record.gender"></GiCellTag>
             </template>
           </a-table-column>
           <a-table-column title="联系方式" data-index="phone" :width="180"></a-table-column>

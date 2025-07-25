@@ -1,67 +1,78 @@
 <template>
   <a-modal v-model:visible="visible" :title="title" width="90%" :mask-closable="false"
-    :modal-style="{ maxWidth: '520px' }" @before-ok="save" @close="close">
+           :modal-style="{ maxWidth: '520px' }" @before-ok="save" @close="close">
     <a-form ref="formRef" :model="form" :rules="rules" size="medium" auto-label-width>
-      <a-form-item label="字典名称" field="name">
-        <a-input v-model.trim="form.name" placeholder="请输入字典名称" allow-clear :max-length="10"> </a-input>
+      <a-form-item label="字典名称" field="dictName">
+        <a-input v-model.trim="form.dictName" placeholder="请输入字典名称" allow-clear :max-length="20"></a-input>
       </a-form-item>
-      <a-form-item label="字典编码" field="code">
-        <a-input v-model.trim="form.code" placeholder="请输入字典编码" allow-clear :max-length="10"> </a-input>
+      <a-form-item label="字典编码" field="dictCode">
+        <a-input v-model.trim="form.dictCode" placeholder="请输入字典编码" allow-clear :max-length="20"></a-input>
       </a-form-item>
-      <a-form-item label="描述" field="description">
-        <a-textarea v-model.trim="form.description" placeholder="请填写描述" :max-length="200" show-word-limit
-          :auto-size="{ minRows: 3, maxRows: 5 }" />
+      <a-form-item label="描述" field="desc">
+        <a-textarea v-model.trim="form.desc" placeholder="请填写描述" :max-length="200" show-word-limit
+                    :auto-size="{ minRows: 3, maxRows: 5 }"/>
       </a-form-item>
-      <a-form-item label="状态" field="status">
-        <a-switch v-model="form.status" type="round" :checked-value="1" :unchecked-value="0" checked-text="正常"
-          unchecked-text="禁用" />
+      <a-form-item label="排序" field="dictSort">
+        <a-input-number v-model="form.dictSort" placeholder="请输入排序" :min="1" mode="button" style="width: 120px"/>
+      </a-form-item>
+      <a-form-item label="状态" field="dictStatus">
+        <GiSwitch v-model="form.dictStatus" :dict="sysStatus" />
       </a-form-item>
     </a-form>
   </a-modal>
 </template>
 
 <script setup lang="ts">
-import { type FormInstance, Message } from '@arco-design/web-vue'
+import _ from 'lodash';
+import {type FormInstance, Message} from '@arco-design/web-vue'
 import * as Regexp from '@/utils/regexp'
-import { useResetReactive } from '@/hooks'
-import { getDictDetail } from '@/apis/system'
+import {useResetReactive} from '@/hooks'
+import {getDictDetail, addDict, editDict} from '@/apis/system'
 
 const emit = defineEmits<{
   (e: 'save-success'): void
 }>()
 
 const formRef = useTemplateRef('formRef')
-const roleId = ref('')
-const isEdit = computed(() => !!roleId.value)
+const dictId = ref('')
+const isEdit = computed(() => !!dictId.value)
 const title = computed(() => (isEdit.value ? '编辑字典' : '新增字典'))
 const visible = ref(false)
 
+import {useDictStore} from "@/stores";
+const dictStore = useDictStore()
+const sysStatus = dictStore.getDictOptions('sys_status')
+
 const [form, resetForm] = useResetReactive({
-  name: '',
-  code: '',
-  status: 1,
-  description: ''
+  dictId: undefined,
+  dictName: undefined,
+  dictCode: undefined,
+  dictSort: 1,
+  dictStatus: '1',
+  desc: undefined
 })
 
 const rules: FormInstance['rules'] = {
-  name: [{ required: true, message: '请输入字典名称' }],
-  code: [
-    { required: true, message: '请输入字典编码' },
-    { match: Regexp.OnlyEn, message: '格式不对！只能是英文' }
+  dictName: [{required: true, message: '请输入字典名称'}],
+  dictCode: [
+    {required: true, message: '请输入字典编码'},
+    {match: Regexp.EnAndUnderline, message: '格式不正确！只能是英文下划线'}
   ],
-  status: [{ required: true }]
+  dictSort: [{required: true, message: '请输入排序'}],
+  dictStatus: [{required: true}]
 }
 
 const add = () => {
-  roleId.value = ''
+  dictId.value = ''
   visible.value = true
 }
 
 const edit = async (id: string) => {
-  roleId.value = id
+  dictId.value = id
   visible.value = true
-  const res = await getDictDetail({ id })
-  Object.assign(form, res.data)
+  const res = await getDictDetail({dictId: id})
+  // 只复制 res.data 中与 form 已有字段相同的属性
+  Object.assign(form, _.pick(res.data, Object.keys(form)))
 }
 
 const close = () => {
@@ -73,18 +84,16 @@ const save = async () => {
   try {
     const valid = await formRef.value?.validate()
     if (valid) return false
-    const res = await new Promise((resolve) => setTimeout(() => resolve(true), 300))
+    const res = isEdit.value ? await editDict(form) : await addDict(form)
     if (res) {
-      Message.success('模拟保存成功')
+      Message.success(res.msg)
       emit('save-success')
       return true
-    } else {
-      return false
     }
   } catch (error) {
     return false
   }
 }
 
-defineExpose({ add, edit })
+defineExpose({add, edit})
 </script>

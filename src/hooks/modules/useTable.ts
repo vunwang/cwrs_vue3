@@ -12,9 +12,9 @@ interface Options<T, U> {
 /** 分页参数类型 */
 type PaginationParams = {
   /** 当前页码 */
-  page: number
+  pageNum: number
   /** 每页数量 */
-  size: number
+  pageSize: number
 }
 
 /** API 函数类型 */
@@ -70,7 +70,7 @@ export function useTable<T extends U, U = T>(api: Api<T>, options?: Options<T, U
   async function getTableData() {
     try {
       loading.value = true
-      const res = await api({ page: pagination.current, size: pagination.pageSize })
+      const res = await api({ pageNum: pagination.current, pageSize: pagination.pageSize })
       // 处理返回的数据结构可能是分页或数组的情况
       const data = !Array.isArray(res.data) ? res.data.records : res.data
       tableData.value = formatResult ? formatResult(data) : data

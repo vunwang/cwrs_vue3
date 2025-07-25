@@ -40,7 +40,7 @@
         <a-table-column title="角色编码" data-index="code" :width="150"></a-table-column>
         <a-table-column title="状态" :width="100" align="center">
           <template #cell="{ record }">
-            <GiCellStatus :status="record.status"></GiCellStatus>
+            <GiCellTag :status="record.status"></GiCellTag>
           </template>
         </a-table-column>
         <a-table-column title="描述" data-index="description" :ellipsis="true" :tooltip="true"></a-table-column>

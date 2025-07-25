@@ -86,6 +86,35 @@ export const OnlyCh = /^[\u4E00-\u9FA5]+$/
 export const OnlyEn = /^[a-zA-Z]+$/
 
 /**
+ * 英文数字正则
+ * @description 匹配英文字母和数字
+ * @example
+ * EnNum.test('English123') // true
+ * EnNum.test('123') // true
+ * EnNum.test('English') // true
+ */
+export const EnNum = /^[a-zA-Z0-9]+$/
+
+/**
+ * 英文数字和下划线正则
+ * @description 匹配英文字母、数字和下划线
+ * @example
+ * EnNum.test('English_123') // true
+ * EnNum.test('123') // true
+ * EnNum.test('English') // true
+ */
+export const EnNumAndUnderline = /^[a-zA-Z0-9_]+$/
+
+/**
+ * 英文和下划线正则
+ * @description 匹配英文字母和下划线
+ * @example
+ * EnAndUnderline.test('English_abc') // true
+ * EnAndUnderline.test('English') // true
+ */
+export const EnAndUnderline = /^[a-zA-Z_]+$/
+
+/**
  * 强密码正则（已注释，供参考）
  * @description 密码为8-18位数字/字符/符号的组合
  * - 不能是纯数字

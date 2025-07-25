@@ -101,12 +101,12 @@ const currentPageIconList = ref(IconList.slice(0, pageSize))
 const searchList = ref<string[]>([])
 
 // 页码改变
-const onPageChange = (page: number) => {
-  current.value = page
+const onPageChange = (pageNum: number) => {
+  current.value = pageNum
   if (!searchList.value.length) {
-    currentPageIconList.value = IconList.slice((page - 1) * pageSize, page * pageSize)
+    currentPageIconList.value = IconList.slice((pageNum - 1) * pageSize, pageNum * pageSize)
   } else {
-    currentPageIconList.value = searchList.value.slice((page - 1) * pageSize, page * pageSize)
+    currentPageIconList.value = searchList.value.slice((pageNum - 1) * pageSize, pageNum * pageSize)
   }
 }
 

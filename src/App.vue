@@ -13,8 +13,8 @@ import { useAppStore, useDictStore } from '@/stores'
 defineOptions({ name: 'App' })
 const appStore = useAppStore()
 appStore.initTheme()
-// const dictStore = useDictStore()
-// dictStore.getDictData()
+const dictStore = useDictStore()
+dictStore.getDictData()
 </script>
 
 <style lang="scss" scoped>

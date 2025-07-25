@@ -57,6 +57,7 @@ import {useTabsStore, useUserStore} from '@/stores'
 import {useLoading} from '@/hooks'
 import * as Regexp from '@/utils/regexp'
 import {isMobile} from '@/utils'
+import {EnNum} from "@/utils/regexp";
 
 defineOptions({name: 'Login'})
 const router = useRouter()
@@ -77,7 +78,7 @@ const rules: FormInstance['rules'] = {
   account: [{required: true, message: '请输入账号'}],
   password: [
     {required: true, message: '请输入密码'},
-    {match: Regexp.Password, message: '输入密码格式不正确'}
+    {match: Regexp.EnNum, message: '密码只能英文字母、数字组成'}
   ],
   identity: [{required: true, message: '请选择身份'}],
 }

@@ -33,7 +33,7 @@ const modules = import.meta.glob('@/views/**/*.vue')
  * @param {string} view - 组件路径（相对于 views 目录）
  * @returns {Function|undefined} 返回组件的加载函数或 undefined
  * @example
- * loadView('system/user/index')
+ * loadView('system/user/index.vue')
  */
 export const loadView = (view: string) => {
   let res
@@ -53,7 +53,7 @@ export const loadView = (view: string) => {
  * @returns {Function} 返回组件的加载函数
  * @example
  * transformComponentView('Layout')
- * transformComponentView('system/user/index')
+ * transformComponentView('system/user/index.vue')
  */
 const transformComponentView = (component: string) => {
   if (component === 'Layout') {
