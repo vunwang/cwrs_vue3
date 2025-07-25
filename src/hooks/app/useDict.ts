@@ -10,11 +10,11 @@ type Options =
   & A.TreeSelectInstance['$props']['data']
 
 /** 字典模块 */
-export function useDict(option: { code: string }) {
+export function useDict(option: { dictCode: string }) {
   const dictStore = useDictStore()
 
   const data = computed(() => {
-    return dictStore.dictData[option.code] as Options
+    return dictStore.dictData[option.dictCode] as Options
   })
 
   return { data }

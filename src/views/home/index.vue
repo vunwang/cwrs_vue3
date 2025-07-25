@@ -22,7 +22,7 @@
     </a-row>
 
     <a-back-top :visible-height="100" target-container="#home">
-      <GiSvgIcon name="backtop" :size="50" class="backtop-icon"></GiSvgIcon>
+      <CwrsSvgIcon name="backtop" :size="50" class="backtop-icon"></CwrsSvgIcon>
     </a-back-top>
   </div>
 </template>

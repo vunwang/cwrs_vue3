@@ -75,7 +75,7 @@
         <a-table-column title="权限标识" data-index="permission"></a-table-column>
         <a-table-column title="菜单图标" data-index="icon" :width="100" align="center">
           <template #cell="{ record }">
-            <GiSvgIcon v-if="record.svgIcon" :size="24" :name="record.svgIcon"></GiSvgIcon>
+            <CwrsSvgIcon v-if="record.svgIcon" :size="24" :name="record.svgIcon"></CwrsSvgIcon>
             <template v-else>
               <component :is="record.icon" v-if="record.icon" :size="24"></component>
             </template>
@@ -144,7 +144,7 @@ import {isExternal} from '@/utils/validate'
 import {transformPathToName} from '@/utils'
 import {useDict} from '@/hooks/app'
 import {useTable} from '@/hooks'
-import GiCodeView from '@/components/GiCodeView/index.vue'
+import CwrsCodeView from '@/components/CwrsCodeView/index.vue'
 
 defineOptions({name: 'SystemMenu'})
 
@@ -186,7 +186,7 @@ const onEdit = (item: MenuItem) => {
 const onViewCode = () => {
   Drawer.open({
     title: '数据结构',
-    content: () => h(GiCodeView, {codeJson: JSON.stringify(menuList.value, null, '\t')}),
+    content: () => h(CwrsCodeView, {codeJson: JSON.stringify(menuList.value, null, '\t')}),
     width: 560
   })
 }

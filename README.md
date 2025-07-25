@@ -2,9 +2,7 @@
 
 **cwrs_vue3** 是一个基于 Vue3、Vite、TypeScript、Arco Design Vue、Pinia、VueUse 等的免费中后台模版，它使用了最新的前端技术栈，内置丰富的主题配置，有着极高的代码规范，开箱即用的模板，也可用于学习参考。
 
-> **Gi 前缀含义：** G：代表全局 i：代表我的
->
-> Gi 用来定义全局组件前缀，如 GiNavBar、GiTitle、GiLoading
+> Gwrs 用来定义全局组件前缀，如 GwrsNavBar、GwrsTitle、GwrsLoading
 
 ### 特性
 
@@ -67,10 +65,6 @@ vite 官网地址： https://cn.vitejs.dev/
 ```
 npm config set registry https://registry.npmjs.org/
 ```
-
-**为什么全局组件使用前缀 Gi?**
-
-全局组件设置了按需引入，使用前缀，方便和局部组件做区分
 
 **为什么组件使用单词大写开头 (PascalCase)命名写法？**
 
@@ -711,9 +705,9 @@ const submit = () => {
 
 可参考 Vue2 官网-风格指南: https://v2.cn.vuejs.org/v2/style-guide/
 ```
-GiTitle.vue
-GiThemeBtn.vue
-GiSvgIcon.vue
+CwrsTitle.vue
+CwrsThemeBtn.vue
+CwrsSvgIcon.vue
 ```
 
 #### 局部组件--命名规范
@@ -808,9 +802,9 @@ const onEdit = (item: PersonItem) => {
 </script>
 ```
 
-#### GiForm 使用示例
+#### CwrsForm 使用示例
 
-GiForm 是一个 JSON 配置表单组件，能够快速通过 JSON 构建表单布局
+CwrsForm 是一个 JSON 配置表单组件，能够快速通过 JSON 构建表单布局
 **新版文档**
 
 **columns配置**
@@ -830,9 +824,9 @@ GiForm 是一个 JSON 配置表单组件，能够快速通过 JSON 构建表单�
 | show          | 动态显示 （form）=> boolean 返回一个布尔值， form为v-model绑定的表单 |
 | disabled      | 动态禁用 （form）=> boolean 返回一个布尔值， form为v-model绑定的表单 |
 
-#### GiTable 使用示例
+#### CwrsTable 使用示例
 
-**GiTable继承了a-table的所有属性和配置，只是多了一些插槽，以及prop属性，具体看源码**
+**CwrsTable继承了a-table的所有属性和配置，只是多了一些插槽，以及prop属性，具体看源码**
 
 #### Hooks 目录结构
 

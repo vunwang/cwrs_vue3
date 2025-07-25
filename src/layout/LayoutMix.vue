@@ -19,7 +19,7 @@
           :trigger-props="menuTriggerProps" @menu-item-click="handleMenuItemClick">
           <a-menu-item v-for="item in topMenus" :key="item.path">
             <template #icon>
-              <GiSvgIcon v-if="getMenuIcon(item, 'svgIcon')" :name="getMenuIcon(item, 'svgIcon') || ''" :size="24" />
+              <CwrsSvgIcon v-if="getMenuIcon(item, 'svgIcon')" :name="getMenuIcon(item, 'svgIcon') || ''" :size="24" />
               <component :is="getMenuIcon(item, 'icon')" v-else-if="getMenuIcon(item, 'icon')" />
             </template>
             <span>{{ item.meta?.title || item.children?.[0]?.meta?.title || '' }}</span>

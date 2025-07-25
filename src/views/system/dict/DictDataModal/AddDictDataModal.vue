@@ -1,5 +1,5 @@
 <template>
-  <a-modal v-model:visible="visible" :title="title" width="90%" :mask-closable="false"
+  <a-modal v-model:visible="visible" :title="title" width="90%" :mask-closable="true"
     :modal-style="{ maxWidth: '520px' }" @before-ok="save" @close="close">
     <a-spin :loading="loading" class="w-full">
       <a-form ref="formRef" :model="form" :rules="rules" size="medium" auto-label-width>
@@ -16,8 +16,11 @@
         <a-form-item label="排序" field="itemSort">
           <a-input-number v-model="form.itemSort" placeholder="请输入排序" :min="1" mode="button" style="width: 120px" />
         </a-form-item>
+        <a-form-item label="颜色" field="itemColor">
+          <a-color-picker v-model="form.itemColor" defaultValue="#F1590E" showText disabledAlpha showPreset/>
+        </a-form-item>
         <a-form-item label="状态" field="itemStatus">
-          <GiSwitch v-model="form.itemStatus" :dict="sysStatus" />
+          <CwrsSwitch v-model="form.itemStatus" :dict="sysStatus" />
         </a-form-item>
       </a-form>
     </a-spin>
@@ -30,6 +33,7 @@ import { type FormInstance, Message } from '@arco-design/web-vue'
 import { getDictItemDetail, addDictItem, editDictItem } from '@/apis/system'
 import { useResetReactive } from '@/hooks'
 import * as Regexp from "@/utils/regexp";
+import {useDict} from "@/hooks/app";
 
 const emit = defineEmits<{
   (e: 'save-success'): void
@@ -42,15 +46,14 @@ const title = computed(() => (isEdit.value ? '编辑字典数据' : '新增字�
 const visible = ref(false)
 const loading = ref(false)
 
-import {useDictStore} from "@/stores";
-const dictStore = useDictStore()
-const sysStatus = dictStore.getDictOptions('sys_status')
+const { data: sysStatus } = useDict({ dictCode: 'sys_status' })
 
 const [form, resetForm] = useResetReactive({
   dictItemId: undefined,
   dictCode: undefined,
   itemName: undefined,
   itemValue: undefined,
+  itemColor: undefined,
   itemStatus: '1',
   itemSort: 1,
   desc: undefined
@@ -63,6 +66,7 @@ const rules: FormInstance['rules'] = {
     { match: Regexp.EnNumAndUnderline, message: '格式不对！只能包含英文数字下划线' }
   ],
   itemSort: [{ required: true, message: '请输入排序' }],
+  itemColor: [{ required: true }],
   itemStatus: [{ required: true }]
 }
 

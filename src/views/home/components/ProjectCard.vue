@@ -6,7 +6,7 @@
           <a-card :bordered="false" hoverable :class="`animated-fade-up-${index}`">
             <section class="item">
               <div class="item__header">
-                <GiSvgIcon :size="30" :name="item.icon"></GiSvgIcon>
+                <CwrsSvgIcon :size="30" :name="item.icon"></CwrsSvgIcon>
                 <span class="item__name gi_line_1">{{ item.name }}</span>
               </div>
               <div class="item__middle">
@@ -26,7 +26,7 @@ import Dayjs from 'dayjs'
 
 const list = [
   {
-    name: 'Github',
+    name: 'Cwrsthub',
     desc: '是一个面向开源及私有软件项目的托管平台',
     source: '开源君',
     icon: 'item-github'

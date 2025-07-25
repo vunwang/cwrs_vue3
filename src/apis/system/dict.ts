@@ -1,5 +1,3 @@
-import type { SelectOptionData } from '@arco-design/web-vue'
-import type * as T from './type'
 import http from '@/utils/http'
 
 /** 获取字典数据列表 */

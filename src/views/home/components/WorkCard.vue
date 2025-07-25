@@ -24,7 +24,7 @@
           <a-statistic :value="16" :value-from="0" :start="true" animation>
             <template #title>
               <a-space>
-                <GiSvgIcon name="icon-num"></GiSvgIcon>
+                <CwrsSvgIcon name="icon-num"></CwrsSvgIcon>
                 <span>项目数</span>
               </a-space>
             </template>
@@ -32,7 +32,7 @@
           <a-statistic :value="3" :value-from="0" :start="true" animation>
             <template #title>
               <a-space>
-                <GiSvgIcon name="icon-wait"></GiSvgIcon>
+                <CwrsSvgIcon name="icon-wait"></CwrsSvgIcon>
                 <span>待办</span>
               </a-space>
             </template>
@@ -41,7 +41,7 @@
           <a-statistic :value="35" :value-from="0" :start="true" animation>
             <template #title>
               <a-space>
-                <GiSvgIcon name="icon-msg"></GiSvgIcon>
+                <CwrsSvgIcon name="icon-msg"></CwrsSvgIcon>
                 <span>消息</span>
               </a-space>
             </template>

@@ -1,5 +1,5 @@
 <template>
-  <GiSvgIcon v-if="props.svgIcon" :name="props.svgIcon" :size="24"></GiSvgIcon>
+  <CwrsSvgIcon v-if="props.svgIcon" :name="props.svgIcon" :size="24"></CwrsSvgIcon>
   <component :is="props.icon" v-else-if="props.icon"></component>
 </template>
 

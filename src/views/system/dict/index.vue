@@ -2,15 +2,21 @@
   <a-card title="字典管理" class="gi_page_card">
     <a-space wrap>
       <a-input v-model="form.dictName" placeholder="字典类型名称/编码" allow-clear style="width: 250px">
-        <template #prefix><icon-search /></template>
+        <template #prefix>
+          <icon-search/>
+        </template>
       </a-input>
-      <a-select v-model="form.dictStatus" :options="options" placeholder="状态" allow-clear style="width: 120px"></a-select>
+      <CwrsSelect v-model="form.dictStatus" :options="sysStatus" :width="120" placeholder="状态"/>
       <a-button type="primary" @click="search">
-        <template #icon><icon-search /></template>
+        <template #icon>
+          <icon-search/>
+        </template>
         <span>查询</span>
       </a-button>
       <a-button @click="reset">
-        <template #icon><icon-refresh /></template>
+        <template #icon>
+          <icon-refresh/>
+        </template>
         <span>重置</span>
       </a-button>
     </a-space>
@@ -18,20 +24,24 @@
     <a-row>
       <a-space wrap>
         <a-button type="primary" @click="onAdd">
-          <template #icon><icon-plus /></template>
+          <template #icon>
+            <icon-plus/>
+          </template>
           <span>新增</span>
         </a-button>
         <a-button type="primary" status="danger" @click="onMulDelete">
-          <template #icon><icon-delete /></template>
+          <template #icon>
+            <icon-delete/>
+          </template>
           <span>删除</span>
         </a-button>
       </a-space>
     </a-row>
 
-    <a-table class="gi_table" row-key="id" :data="dictList" :bordered="{ cell: true }" :loading="loading"
-      :scroll="{ x: '100%', y: '100%', minWidth: 1000 }" :pagination="pagination"
-      :row-selection="{ type: 'checkbox', showCheckedAll: true }" :selected-keys="selectedKeys" @select="select"
-      @select-all="selectAll">
+    <a-table class="gi_table" row-key="dictId" :data="dictList" :bordered="{ cell: true }" :loading="loading"
+             :scroll="{ x: '100%', y: '100%', minWidth: 1000 }" :pagination="pagination"
+             :row-selection="{ type: 'checkbox', showCheckedAll: true }" :selected-keys="selectedKeys" @select="select"
+             @select-all="selectAll">
       <template #columns>
         <a-table-column title="序号" :width="64">
           <template #cell="cell">{{ cell.rowIndex + 1 }}</template>
@@ -40,7 +50,7 @@
         <a-table-column title="字典编码" data-index="dictCode"></a-table-column>
         <a-table-column title="状态" :width="100" align="center" :ellipsis="true">
           <template #cell="{ record }">
-            <GiCellTag :value="record.dictStatus" :dict="sysStatus"></GiCellTag>
+            <CwrsCellTag :value="record.dictStatus" :dict="sysStatus"></CwrsCellTag>
           </template>
         </a-table-column>
         <a-table-column title="排序" data-index="dictSort" :width="80"></a-table-column>
@@ -52,16 +62,22 @@
           <template #cell="{ record }">
             <a-space>
               <a-button type="primary" status="success" size="mini" @click="onViewDictData(record)">
-                <template #icon><icon-storage /></template>
+                <template #icon>
+                  <icon-storage/>
+                </template>
                 <span>数据</span>
               </a-button>
               <a-button type="primary" size="mini" @click="onEdit(record)">
-                <template #icon><icon-edit /></template>
+                <template #icon>
+                  <icon-edit/>
+                </template>
                 <span>编辑</span>
               </a-button>
               <a-popconfirm type="warning" style="width: 180px" content="确定删除该字典吗?" @ok="onDelete(record)">
                 <a-button type="primary" status="danger" size="mini">
-                  <template #icon><icon-delete /></template>
+                  <template #icon>
+                    <icon-delete/>
+                  </template>
                   <span>删除</span>
                 </a-button>
               </a-popconfirm>
@@ -77,23 +93,19 @@
 </template>
 
 <script setup lang="ts">
-import { Message } from '@arco-design/web-vue'
+import {Message} from '@arco-design/web-vue'
 import AddDictModal from './AddDictModal.vue'
 import DictDataModal from './DictDataModal/index.vue'
-import { useTable } from '@/hooks'
-import { useDict } from '@/hooks/app'
+import {useTable} from '@/hooks'
+import {useDict} from '@/hooks/app'
 import {delDict, getDictList} from '@/apis/system'
 import {parseTime} from "@/utils/time";
 
-defineOptions({ name: 'SystemRole' })
+defineOptions({name: 'SystemRole'})
 
-const { data: options } = useDict({ code: 'status' })
+const {data: sysStatus} = useDict({dictCode: 'sys_status'})
 const AddDictModalRef = useTemplateRef('AddDictModalRef')
 const DictDataModalRef = useTemplateRef('DictDataModalRef')
-
-import {useDictStore} from "@/stores";
-const dictStore = useDictStore()
-const sysStatus = dictStore.getDictOptions('sys_status')
 
 const form = reactive({
   pageNum: 1,
@@ -111,7 +123,7 @@ const {
   select,
   selectAll,
   fixed
-} = useTable(() => getDictList(form), { immediate: true })
+} = useTable(() => getDictList(form), {immediate: true, rowKey: 'dictId'})
 
 const reset = () => {
   form.dictName = undefined
@@ -120,9 +132,16 @@ const reset = () => {
 }
 
 // 批量删除
-const onMulDelete = () => {
+const onMulDelete = async() => {
   if (!selectedKeys.value.length) {
     return Message.warning('请选择字典！')
+  }
+  const dictIds = Object.values(selectedKeys.value).toString()
+  console.log(dictIds)
+  const res = await delDict({dictIds: dictIds})
+  if (res) {
+    Message.success(res.msg)
+    search()
   }
 }
 
@@ -135,7 +154,7 @@ const onEdit = (item: any) => {
 }
 
 const onDelete = async (item: any) => {
-  const res = await delDict({ dictId: item.dictId })
+  const res = await delDict({dictIds: item.dictId})
   if (res) {
     Message.success(res.msg)
     search()
@@ -143,7 +162,7 @@ const onDelete = async (item: any) => {
 }
 
 const onViewDictData = (item: any) => {
-  DictDataModalRef.value?.open({ dictCode: item.dictCode })
+  DictDataModalRef.value?.open({dictCode: item.dictCode})
 }
 </script>
 

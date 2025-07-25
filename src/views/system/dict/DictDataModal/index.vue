@@ -1,5 +1,5 @@
 <template>
-  <a-modal v-model:visible="visible" title="字典数据" width="60%" hide-cancel ok-text="关闭" :mask-closable="false">
+  <a-modal v-model:visible="visible" title="字典数据" width="60%" hide-cancel ok-text="关闭" :mask-closable="true">
     <a-row>
       <a-space wrap>
         <a-button type="primary" @click="onAdd">
@@ -27,9 +27,10 @@
         </a-table-column>
         <a-table-column title="字典名" data-index="itemName"></a-table-column>
         <a-table-column title="字典值" data-index="itemValue"></a-table-column>
+        <a-table-column title="颜色" data-index="itemColor"></a-table-column>
         <a-table-column title="状态" :width="100" align="center">
           <template #cell="{ record }">
-            <GiCellTag :value="record.itemStatus" :dict="sysStatus"></GiCellTag>
+            <CwrsCellTag :value="record.itemStatus" :dict="sysStatus"></CwrsCellTag>
           </template>
         </a-table-column>
         <a-table-column title="操作" :width="180" align="center">
@@ -64,13 +65,12 @@ import {Message} from '@arco-design/web-vue'
 import AddDictDataModal from './AddDictDataModal.vue'
 import {delDictItem, getDictDataList} from '@/apis/system'
 import {useTable} from '@/hooks'
+import {useDict} from "@/hooks/app";
 
 const visible = ref(false)
 const AddDictDataModalRef = useTemplateRef('AddDictDataModalRef')
 
-import {useDictStore} from "@/stores";
-const dictStore = useDictStore()
-const sysStatus = dictStore.getDictOptions('sys_status')
+const { data: sysStatus } = useDict({ dictCode: 'sys_status' })
 
 const dictCode = ref('')
 

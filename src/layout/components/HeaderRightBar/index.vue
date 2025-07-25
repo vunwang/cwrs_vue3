@@ -40,7 +40,7 @@
 
       <!-- 暗黑模式切换 -->
       <a-tooltip content="主题切换" position="bottom">
-        <GiThemeBtn></GiThemeBtn>
+        <CwrsThemeBtn></CwrsThemeBtn>
       </a-tooltip>
 
       <!-- 管理员账户 -->
@@ -58,18 +58,18 @@
         <template #content>
           <a-doption v-for="item in userMenuItems" :key="item.key" @click="item.onClick">
             <template #icon>
-              <GiIconBox :color="item.iconColor">
+              <CwrsIconBox :color="item.iconColor">
                 <component :is="item.icon" />
-              </GiIconBox>
+              </CwrsIconBox>
             </template>
             <span>{{ item.label }}</span>
           </a-doption>
           <a-divider :margin="0" />
           <a-doption @click="handleLogout">
             <template #icon>
-              <GiIconBox color="warning">
+              <CwrsIconBox color="warning">
                 <icon-export />
-              </GiIconBox>
+              </CwrsIconBox>
             </template>
             <span>退出登录</span>
           </a-doption>

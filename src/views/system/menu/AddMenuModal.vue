@@ -22,7 +22,7 @@
       <a-row v-if="[1, 2].includes(form.type)" :gutter="16">
         <a-col v-bind="col2Props">
           <a-form-item label="自定义图标" field="svgIcon">
-            <GiIconSelector v-model="form.svgIcon" type="custom"></GiIconSelector>
+            <CwrsIconSelector v-model="form.svgIcon" type="custom"></CwrsIconSelector>
             <a-tooltip content="优先显示">
               <icon-question-circle-fill :size="18" style="color: rgba(var(--warning-6)); margin-left: 8px" />
             </a-tooltip>
@@ -30,7 +30,7 @@
         </a-col>
         <a-col v-bind="col2Props">
           <a-form-item label="菜单图标" field="icon">
-            <GiIconSelector v-model="form.icon"></GiIconSelector>
+            <CwrsIconSelector v-model="form.icon"></CwrsIconSelector>
           </a-form-item>
         </a-col>
       </a-row>

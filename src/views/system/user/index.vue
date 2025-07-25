@@ -1,6 +1,6 @@
 <template>
   <a-card title="用户管理" class="gi_page_card">
-    <GiSplitPane>
+    <CwrsSplitPane>
       <template #left>
         <a-input v-model="treeInputValue" placeholder="输入部门名称搜索" allow-clear :style="{ marginBottom: '8px' }">
           <template #prefix><icon-search /></template>
@@ -63,17 +63,17 @@
           </a-table-column>
           <a-table-column title="昵称" data-index="nickname" :width="150">
             <template #cell="{ record }">
-              <GiCellAvatar :avatar="record.avatar" :name="record.nickname"></GiCellAvatar>
+              <CwrsCellAvatar :avatar="record.avatar" :name="record.nickname"></CwrsCellAvatar>
             </template>
           </a-table-column>
           <a-table-column title="状态" :width="100" align="center">
             <template #cell="{ record }">
-              <GiCellTag :status="record.status"></GiCellTag>
+              <CwrsCellTag :status="record.status"></CwrsCellTag>
             </template>
           </a-table-column>
           <a-table-column title="性别" data-index="gender" :width="80" align="center">
             <template #cell="{ record }">
-              <GiCellTag :gender="record.gender"></GiCellTag>
+              <CwrsCellTag :gender="record.gender"></CwrsCellTag>
             </template>
           </a-table-column>
           <a-table-column title="联系方式" data-index="phone" :width="180"></a-table-column>
@@ -105,7 +105,7 @@
           </a-table-column>
         </template>
       </a-table>
-    </GiSplitPane>
+    </CwrsSplitPane>
 
     <AddUserModal ref="AddUserModalRef" @save-success="search"></AddUserModal>
     <UserDetailDrawer ref="UserDetailDrawerRef"></UserDetailDrawer>

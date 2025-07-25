@@ -1,5 +1,5 @@
 <template>
-  <a-modal v-model:visible="visible" :title="title" width="90%" :mask-closable="false"
+  <a-modal v-model:visible="visible" :title="title" width="90%" :mask-closable="true"
            :modal-style="{ maxWidth: '520px' }" @before-ok="save" @close="close">
     <a-form ref="formRef" :model="form" :rules="rules" size="medium" auto-label-width>
       <a-form-item label="字典名称" field="dictName">
@@ -16,7 +16,7 @@
         <a-input-number v-model="form.dictSort" placeholder="请输入排序" :min="1" mode="button" style="width: 120px"/>
       </a-form-item>
       <a-form-item label="状态" field="dictStatus">
-        <GiSwitch v-model="form.dictStatus" :dict="sysStatus" />
+        <CwrsSwitch v-model="form.dictStatus" :dict="sysStatus" />
       </a-form-item>
     </a-form>
   </a-modal>
@@ -28,6 +28,7 @@ import {type FormInstance, Message} from '@arco-design/web-vue'
 import * as Regexp from '@/utils/regexp'
 import {useResetReactive} from '@/hooks'
 import {getDictDetail, addDict, editDict} from '@/apis/system'
+import {useDict} from "@/hooks/app";
 
 const emit = defineEmits<{
   (e: 'save-success'): void
@@ -39,9 +40,7 @@ const isEdit = computed(() => !!dictId.value)
 const title = computed(() => (isEdit.value ? '编辑字典' : '新增字典'))
 const visible = ref(false)
 
-import {useDictStore} from "@/stores";
-const dictStore = useDictStore()
-const sysStatus = dictStore.getDictOptions('sys_status')
+const { data: sysStatus } = useDict({ dictCode: 'sys_status' })
 
 const [form, resetForm] = useResetReactive({
   dictId: undefined,

@@ -41,7 +41,7 @@
         <a-table-column title="排序" data-index="sort" :width="100" align="center"></a-table-column>
         <a-table-column title="状态" :width="100" align="center">
           <template #cell="{ record }">
-            <GiCellTag :status="record.status"></GiCellTag>
+            <CwrsCellTag :status="record.status"></CwrsCellTag>
           </template>
         </a-table-column>
         <a-table-column title="描述" data-index="description" :width="250" :ellipsis="true"

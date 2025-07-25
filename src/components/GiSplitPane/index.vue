@@ -1,19 +1,19 @@
 <!--
-  @file GiSplitPane 组件
+  @file CwrsSplitPane 组件
   @description 可折叠的分栏布局组件，支持左右布局，带有折叠按钮控制左侧面板的显示/隐藏
 -->
 <template>
   <div class="gi-split-pane">
     <!-- 左侧可折叠面板 -->
-    <GiSplitPaneFlexibleBox v-model:visible="visible">
+    <CwrsSplitPaneFlexibleBox v-model:visible="visible">
       <div class="gi-split-pane__left">
         <slot name="left"></slot>
       </div>
-    </GiSplitPaneFlexibleBox>
+    </CwrsSplitPaneFlexibleBox>
 
     <!-- 分割线及控制按钮 -->
     <div class="gi-split-pane__line">
-      <GiSplitButton :collapsed="!visible" @click="handleClick"></GiSplitButton>
+      <CwrsSplitButton :collapsed="!visible" @click="handleClick"></CwrsSplitButton>
     </div>
 
     <!-- 右侧内容区域 -->
@@ -27,7 +27,7 @@
 import { ref } from 'vue'
 
 /** 组件名称 */
-defineOptions({ name: 'GiSplitPane' })
+defineOptions({ name: 'CwrsSplitPane' })
 
 /** 插槽类型定义 */
 defineSlots<{

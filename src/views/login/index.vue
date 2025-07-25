@@ -44,7 +44,7 @@
       </a-col>
     </a-row>
 
-    <GiThemeBtn class="theme-btn"></GiThemeBtn>
+    <CwrsThemeBtn class="theme-btn"></CwrsThemeBtn>
 
     <LoginBg></LoginBg>
   </div>

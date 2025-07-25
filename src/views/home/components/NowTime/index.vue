@@ -1,6 +1,6 @@
 <template>
   <div v-if="time" class="now-time">
-    <GiSvgIcon name="time" :size="20"></GiSvgIcon>
+    <CwrsSvgIcon name="time" :size="20"></CwrsSvgIcon>
     <p class="now-time__time gi_line_1">{{ time }}</p>
   </div>
 </template>
