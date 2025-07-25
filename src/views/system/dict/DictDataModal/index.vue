@@ -27,7 +27,11 @@
         </a-table-column>
         <a-table-column title="字典名" data-index="itemName"></a-table-column>
         <a-table-column title="字典值" data-index="itemValue"></a-table-column>
-        <a-table-column title="颜色" data-index="itemColor"></a-table-column>
+        <a-table-column title="颜色" data-index="itemColor" :width="150">
+          <template #cell="{ record }">
+            <a-color-picker v-model="record.itemColor" size="mini" :disabled="true" showText/>
+          </template>
+        </a-table-column>
         <a-table-column title="状态" :width="100" align="center">
           <template #cell="{ record }">
             <CwrsCellTag :value="record.itemStatus" :dict="sysStatus"></CwrsCellTag>
