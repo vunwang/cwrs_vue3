@@ -10,6 +10,7 @@ import {
     logout as logoutApi
 } from '@/apis/user'
 import {clearMenuId, clearToken, getToken, setToken} from '@/utils/auth'
+import {useDictStore} from "@/stores";
 
 /** 登录参数接口 */
 interface LoginParams {
@@ -150,6 +151,9 @@ const storeSetup = () => {
             if (roleId) {
                 permissions.value = userPermissions || []
             }
+            //登录成功初始化数据字典信息
+            const dictStore = useDictStore()
+            dictStore.getDictData()
         } catch (error) {
             console.error('获取用户信息失败:', error)
             throw error

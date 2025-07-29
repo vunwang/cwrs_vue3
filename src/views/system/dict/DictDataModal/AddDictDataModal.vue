@@ -20,7 +20,7 @@
           <a-color-picker v-model="form.itemColor" defaultValue="#F1590E" showText disabledAlpha showPreset/>
         </a-form-item>
         <a-form-item label="状态" field="itemStatus">
-          <CwrsSwitch v-model="form.itemStatus" :dict="sysStatus" />
+          <CwrsSwitch v-model="form.itemStatus" size="medium" />
         </a-form-item>
       </a-form>
     </a-spin>
@@ -46,17 +46,15 @@ const title = computed(() => (isEdit.value ? '编辑字典数据' : '新增字�
 const visible = ref(false)
 const loading = ref(false)
 
-const { data: sysStatus } = useDict({ dictCode: 'sys_status' })
-
 const [form, resetForm] = useResetReactive({
-  dictItemId: undefined,
-  dictCode: undefined,
-  itemName: undefined,
-  itemValue: undefined,
-  itemColor: undefined,
+  dictItemId: '',
+  dictCode: '',
+  itemName: '',
+  itemValue: '',
+  itemColor: '#F1590E',
   itemStatus: '1',
   itemSort: 1,
-  desc: undefined
+  desc: ''
 })
 
 const rules: FormInstance['rules'] = {

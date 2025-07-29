@@ -8,13 +8,11 @@
 </template>
 
 <script setup lang="ts">
-import { useAppStore, useDictStore } from '@/stores'
+import { useAppStore } from '@/stores'
 
 defineOptions({ name: 'App' })
 const appStore = useAppStore()
 appStore.initTheme()
-const dictStore = useDictStore()
-dictStore.getDictData()
 </script>
 
 <style lang="scss" scoped>

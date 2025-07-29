@@ -93,12 +93,30 @@ const request = <T = unknown>(config: AxiosRequestConfig): Promise<ApiRes<T>> =>
     })
 }
 
+function filterEmptyStrings<T extends Record<string, any>>(obj: T): Partial<T> {
+    const result: Partial<T> = {};
+
+    for (const key in obj) {
+        if (obj.hasOwnProperty(key)) {
+            const value = obj[key];
+            // 检查是否为非空字符串
+            if (typeof value === 'string' && value.trim() !== '') {
+                result[key] = value;
+            } else if (typeof value !== 'string') { // 如果不是字符串，则直接添加
+                result[key] = value;
+            }
+        }
+    }
+
+    return result;
+}
+
 /** GET 请求 */
 const get = <T = any>(url: string, params?: object, config?: AxiosRequestConfig): Promise<ApiRes<T>> => {
     return request({
         method: 'get',
         url,
-        params,
+        params: params ? filterEmptyStrings(params) : undefined,
         ...config
     })
 }
@@ -108,7 +126,7 @@ const post = <T = any>(url: string, params?: object, config?: AxiosRequestConfig
     return request({
         method: 'post',
         url,
-        data: params,
+        data: params ? filterEmptyStrings(params) : undefined,
         ...config
     })
 }
@@ -118,7 +136,7 @@ const put = <T = any>(url: string, params?: object, config?: AxiosRequestConfig)
     return request({
         method: 'put',
         url,
-        data: params,
+        data: params ? filterEmptyStrings(params) : undefined,
         ...config
     })
 }
@@ -128,7 +146,7 @@ const del = <T = any>(url: string, params?: object, config?: AxiosRequestConfig)
     return request({
         method: 'delete',
         url,
-        params,
+        params: params ? filterEmptyStrings(params) : undefined,
         ...config
     })
 }

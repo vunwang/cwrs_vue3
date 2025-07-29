@@ -17,6 +17,7 @@ const props = defineProps<{
   dict: { itemName: string; itemValue: string | number; itemColor?: string }[]
 }>()
 
+
 // 计算属性，根据状态查找对应的字典项
 const dictInfo = computed(() => {
   const item = props.dict.find(item => item.itemValue === props.value);

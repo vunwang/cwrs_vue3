@@ -1,27 +1,6 @@
 <template>
   <a-card title="字典管理" class="gi_page_card">
-    <a-space wrap>
-      <a-input v-model="form.dictName" placeholder="字典类型名称/编码" allow-clear style="width: 250px">
-        <template #prefix>
-          <icon-search/>
-        </template>
-      </a-input>
-      <CwrsSelect v-model="form.dictStatus" :options="sysStatus" :width="120" placeholder="状态"/>
-      <a-button type="primary" @click="search">
-        <template #icon>
-          <icon-search/>
-        </template>
-        <span>查询</span>
-      </a-button>
-      <a-button @click="reset">
-        <template #icon>
-          <icon-refresh/>
-        </template>
-        <span>重置</span>
-      </a-button>
-    </a-space>
-
-    <a-row>
+    <a-row justify="space-between">
       <a-space wrap>
         <a-button type="primary" @click="onAdd">
           <template #icon>
@@ -29,11 +8,38 @@
           </template>
           <span>新增</span>
         </a-button>
-        <a-button type="primary" status="danger" @click="onMulDelete">
+        <a-button status="danger" @click="onMulDelete">
           <template #icon>
             <icon-delete/>
           </template>
           <span>删除</span>
+        </a-button>
+        <!-- 确认框 -->
+        <a-modal v-model:visible="isConfirmVisible" width="300px" title="确认删除" @ok="handleDelete" @cancel="handleCancel">
+          <p>确定要删除选中的数据吗？</p>
+        </a-modal>
+      </a-space>
+
+      <a-space wrap>
+        <a-input-group>
+          <CwrsSelect v-model="form.dictStatus" :options="sysStatus" :width="120" placeholder="状态"/>
+          <a-input v-model="form.dictName" placeholder="字典类型名称/编码" allow-clear style="width: 250px">
+            <template #prefix>
+              <icon-search/>
+            </template>
+          </a-input>
+        </a-input-group>
+        <a-button type="primary" @click="search">
+          <template #icon>
+            <icon-search/>
+          </template>
+          <span>查询</span>
+        </a-button>
+        <a-button @click="reset">
+          <template #icon>
+            <icon-refresh/>
+          </template>
+          <span>重置</span>
         </a-button>
       </a-space>
     </a-row>
@@ -61,7 +67,7 @@
         <a-table-column title="操作" :width="280" align="center" :fixed="fixed">
           <template #cell="{ record }">
             <a-space>
-              <a-button type="primary" status="success" size="mini" @click="onViewDictData(record)">
+              <a-button status="success" size="mini" @click="onViewDictData(record)">
                 <template #icon>
                   <icon-storage/>
                 </template>
@@ -74,7 +80,7 @@
                 <span>编辑</span>
               </a-button>
               <a-popconfirm type="warning" style="width: 180px" content="确定删除该字典吗?" @ok="onDelete(record)">
-                <a-button type="primary" status="danger" size="mini">
+                <a-button status="danger" size="mini">
                   <template #icon>
                     <icon-delete/>
                   </template>
@@ -86,7 +92,6 @@
         </a-table-column>
       </template>
     </a-table>
-
     <AddDictModal ref="AddDictModalRef" @save-success="search"></AddDictModal>
     <DictDataModal ref="DictDataModalRef"></DictDataModal>
   </a-card>
@@ -110,40 +115,51 @@ const DictDataModalRef = useTemplateRef('DictDataModalRef')
 const form = reactive({
   pageNum: 1,
   pageSize: 10,
-  dictName: undefined,
-  dictStatus: undefined
+  dictName: '',
+  dictStatus: ''
 })
 
 const {
   loading,
   tableData: dictList,
   pagination,
-  selectedKeys,
   search,
   select,
   selectAll,
+  selectedKeys,
   fixed
 } = useTable(() => getDictList(form), {immediate: true, rowKey: 'dictId'})
 
 const reset = () => {
-  form.dictName = undefined
-  form.dictStatus = undefined
+  form.dictName = ''
+  form.dictStatus = ''
   search()
 }
 
 // 批量删除
-const onMulDelete = async() => {
+const isConfirmVisible = ref(false);
+const onMulDelete = async () => {
   if (!selectedKeys.value.length) {
     return Message.warning('请选择字典！')
   }
+  isConfirmVisible.value = true;
+}
+
+// 删除
+const handleDelete = async () => {
   const dictIds = Object.values(selectedKeys.value).toString()
-  console.log(dictIds)
   const res = await delDict({dictIds: dictIds})
   if (res) {
     Message.success(res.msg)
     search()
   }
-}
+};
+
+// 取消删除
+const handleCancel = () => {
+  Message.info('已取消删除');
+  isConfirmVisible.value = false;
+};
 
 const onAdd = () => {
   AddDictModalRef.value?.add()

@@ -8,16 +8,20 @@
           </template>
           <span>新增</span>
         </a-button>
-        <a-button type="primary" status="danger" @click="onMulDelete">
+        <a-button status="danger" @click="onMulDelete">
           <template #icon>
             <icon-delete/>
           </template>
           <span>删除</span>
         </a-button>
+        <!-- 确认框 -->
+        <a-modal v-model:visible="isConfirmVisible" width="300px" title="确认删除" @ok="handleDelete" @cancel="handleCancel">
+          <p>确定要删除选中的数据吗？</p>
+        </a-modal>
       </a-space>
     </a-row>
 
-    <a-table row-key="id" size="small" :data="tableData" :bordered="{ cell: true }" :loading="loading"
+    <a-table row-key="dictItemId" size="small" :data="tableData" :bordered="{ cell: true }" :loading="loading"
              :scroll="{ x: '100%', y: '100%', minWidth: 600 }" :pagination="{ ...pagination, size: 'small' }"
              :row-selection="{ type: 'checkbox', showCheckedAll: true }" :selected-keys="selectedKeys" @select="select"
              @select-all="selectAll">
@@ -47,7 +51,7 @@
                 <span>编辑</span>
               </a-button>
               <a-popconfirm type="warning" style="width: 200px" content="确定删除该字典项吗?" @ok="onDelete(record)">
-                <a-button type="primary" status="danger" size="mini">
+                <a-button status="danger" size="mini">
                   <template #icon>
                     <icon-delete/>
                   </template>
@@ -74,13 +78,13 @@ import {useDict} from "@/hooks/app";
 const visible = ref(false)
 const AddDictDataModalRef = useTemplateRef('AddDictDataModalRef')
 
-const { data: sysStatus } = useDict({ dictCode: 'sys_status' })
+const {data: sysStatus} = useDict({dictCode: 'sys_status'})
 
 const dictCode = ref('')
 
 const {loading, tableData, pagination, selectedKeys, search, select, selectAll} = useTable(
     (page) => getDictDataList({...page, dictCode: dictCode.value}),
-    {immediate: false}
+    {immediate: false, rowKey: 'dictItemId'}
 )
 
 const open = (data: { dictCode: string }) => {
@@ -91,14 +95,32 @@ const open = (data: { dictCode: string }) => {
 }
 
 // 批量删除
+const isConfirmVisible = ref(false)
 const onMulDelete = () => {
   if (!selectedKeys.value.length) {
     return Message.warning('请选择字典数据！')
   }
+  isConfirmVisible.value = true;
 }
 
+// 删除
+const handleDelete = async () => {
+  const dictItemIds = Object.values(selectedKeys.value).toString()
+  const res = await delDictItem({dictItemIds: dictItemIds})
+  if (res) {
+    Message.success(res.msg)
+    search()
+  }
+};
+
+// 取消删除
+const handleCancel = () => {
+  Message.info('已取消删除');
+  isConfirmVisible.value = false;
+};
+
 const onDelete = async (item: DictDataItem) => {
-  const res = await delDictItem({ dictItemId: item.dictItemId })
+  const res = await delDictItem({dictItemIds: item.dictItemId})
   if (res) {
     Message.success(res.msg)
     search()

@@ -6,6 +6,7 @@
       :unchecked-value="uncheckedValue"
       :checked-text="checkedText"
       :unchecked-text="uncheckedText"
+      :size="size"
   />
 </template>
 
@@ -15,7 +16,8 @@ import {useDict} from "@/hooks/app";
 const { data: sysStatus } = useDict({ dictCode: 'sys_status' })
 
 const props = defineProps<{
-  modelValue: string | number | boolean
+  size: string
+  modelValue: string
 }>()
 
 const emit = defineEmits<{

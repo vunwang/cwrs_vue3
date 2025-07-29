@@ -35,6 +35,9 @@
             <a-select v-model="form.status" :options="options" placeholder="用户状态" allow-clear
               style="width: 150px"></a-select>
             <a-input v-model="form.username" placeholder="输入用户名搜索" allow-clear style="max-width: 250px">
+              <template #prefix>
+                <icon-search/>
+              </template>
             </a-input>
           </a-input-group>
           <a-button type="primary" @click="search">

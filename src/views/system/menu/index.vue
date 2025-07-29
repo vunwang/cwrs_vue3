@@ -8,6 +8,23 @@
           </template>
           <span>新增</span>
         </a-button>
+        <a-button status="success" @click="onMulEdit">
+          <template #icon>
+            <icon-edit/>
+          </template>
+          <span>编辑</span>
+        </a-button>
+        <a-button status="danger" @click="onMulDelete">
+          <template #icon>
+            <icon-delete/>
+          </template>
+          <span>删除</span>
+        </a-button>
+        <!-- 确认框 -->
+        <a-modal v-model:visible="isConfirmVisible" width="300px" title="确认删除" @ok="handleDelete"
+                 @cancel="handleCancel">
+          <p>确定要删除选中的数据吗？</p>
+        </a-modal>
         <a-tooltip content="展开/折叠">
           <a-button type="primary" status="success" @click="onExpanded">
             <template #icon>
@@ -26,12 +43,14 @@
       </a-space>
 
       <a-space wrap>
-        <a-input v-model="form.name" placeholder="输入菜单名称搜索" allow-clear style="width: 250px">
-          <template #prefix>
-            <icon-search/>
-          </template>
-        </a-input>
-        <a-select v-model="form.status" :options="options" placeholder="菜单状态" style="width: 120px"></a-select>
+        <a-input-group>
+          <CwrsSelect v-model="form.status" :options="sysStatus" :width="120" placeholder="状态"/>
+          <a-input v-model="form.title" placeholder="输入菜单名称搜索" allow-clear style="width: 250px">
+            <template #prefix>
+              <icon-search/>
+            </template>
+          </a-input>
+        </a-input-group>
         <a-button type="primary" @click="search">
           <template #icon>
             <icon-search/>
@@ -47,8 +66,11 @@
       </a-space>
     </a-row>
 
-    <a-table ref="tableRef" class="gi_table" row-key="menuId" :data="menuList" :loading="loading" :bordered="{ cell: true }"
-             :scroll="{ x: '100%', y: '100%', minWidth: 1700 }" :pagination="false" size="mini">
+    <a-table ref="tableRef" class="gi_table" row-key="menuId" :data="menuList" :loading="loading"
+             :bordered="{ cell: true }"
+             :scroll="{ x: '100%', y: '100%', minWidth: 1700 }" :pagination="false" size="mini"
+             :row-selection="rowSelection" :selected-keys="selectedKeys"
+             @select="select" @select-all="selectAll">
       <template #expand-icon="{ expanded }">
         <IconDown v-if="expanded"/>
         <IconRight v-else/>
@@ -59,9 +81,7 @@
         </a-table-column>
         <a-table-column title="类型" :width="80" align="center">
           <template #cell="{ record }">
-            <a-tag v-if="record.type === 1" size="small" color="orangered">目录</a-tag>
-            <a-tag v-if="record.type === 2" size="small" color="green">菜单</a-tag>
-            <a-tag v-if="record.type === 3" size="small">按钮</a-tag>
+            <CwrsCellTag :value="record.type" :dict="sysMenuType"></CwrsCellTag>
           </template>
         </a-table-column>
         <a-table-column title="排序" :width="80" align="center">
@@ -81,9 +101,9 @@
             </template>
           </template>
         </a-table-column>
-        <a-table-column title="状态" :width="80" align="center">
+        <a-table-column title="状态" :width="150" align="center">
           <template #cell="{ record }">
-            <a-switch type="round" size="small" :model-value="record.status" :checked-value="1" :unchecked-value="0"/>
+            <CwrsSwitch v-model="record.status" size="small" @change="statusChange"/>
           </template>
         </a-table-column>
         <a-table-column title="是否缓存" :width="100" align="center">
@@ -118,8 +138,8 @@
                   <icon-plus/>
                 </template>
               </a-button>
-              <a-popconfirm type="warning" content="您确定要删除该项吗?">
-                <a-button type="primary" status="danger" size="mini">
+              <a-popconfirm type="warning" content="您确定要删除菜单吗?" @ok="onDelete(record)">
+                <a-button status="danger" size="mini" >
                   <template #icon>
                     <icon-delete/>
                   </template>
@@ -133,13 +153,15 @@
     </a-table>
 
     <AddMenuModal ref="AddMenuModalRef" :menus="menuList" @save-success="search"></AddMenuModal>
+    <EditMenusParentId ref="EditMenusParentIdRef" :menus="menuList" @edit-success="search"></EditMenusParentId>
   </a-card>
 </template>
 
 <script setup lang="ts">
-import {Drawer} from '@arco-design/web-vue'
+import {Drawer, Message} from '@arco-design/web-vue'
 import AddMenuModal from './AddMenuModal.vue'
-import {type MenuItem, getMenuList} from '@/apis/system'
+import EditMenusParentId from './EditMenusParentId.vue'
+import {getMenuList,delMenu} from '@/apis/system'
 import {isExternal} from '@/utils/validate'
 import {transformPathToName} from '@/utils'
 import {useDict} from '@/hooks/app'
@@ -148,8 +170,11 @@ import CwrsCodeView from '@/components/CwrsCodeView/index.vue'
 
 defineOptions({name: 'SystemMenu'})
 
-const {data: options} = useDict({code: 'status'})
+const {data: sysStatus} = useDict({dictCode: 'sys_status'})
+const {data: sysMenuType} = useDict({dictCode: 'sys_menu_type'})
+
 const AddMenuModalRef = useTemplateRef('AddMenuModalRef')
+const EditMenusParentIdRef = useTemplateRef('EditMenusParentIdRef')
 
 const tableRef = useTemplateRef('tableRef')
 const isExpanded = ref(false)
@@ -158,19 +183,69 @@ const onExpanded = () => {
   tableRef.value?.expandAll(isExpanded.value)
 }
 
-const form = reactive({name: '', status: ''})
+const form = reactive({title: '', status: ''})
+
+const rowSelection = computed(() => ({
+  type: 'checkbox',
+  showCheckedAll: false,
+}));
 
 const {
   loading,
   tableData: menuList,
   search,
+  select,
+  selectAll,
+  selectedKeys,
   fixed
-} = useTable(() => getMenuList(), {
-  immediate: true
+} = useTable(() => getMenuList(form), {
+  immediate: true, rowKey: 'menuId'
 })
 
+// 批量编辑
+const onMulEdit = async () => {
+  if (!selectedKeys.value.length) {
+    return Message.warning('请选择菜单！')
+  }
+  EditMenusParentIdRef.value?.edits(selectedKeys.value)
+}
+
+// 删除
+const onDelete = async (item: MenuItem) => {
+  const res = await delMenu({menuIds: item.menuId})
+  if (res) {
+    Message.success(res.msg)
+    search()
+  }
+}
+
+// 批量删除
+const isConfirmVisible = ref(false);
+const onMulDelete = async () => {
+  if (!selectedKeys.value.length) {
+    return Message.warning('请选择菜单！')
+  }
+  isConfirmVisible.value = true;
+}
+
+// 删除
+const handleDelete = async () => {
+  const menuIds = Object.values(selectedKeys.value).toString()
+  const res = await delMenu({menuIds: menuIds})
+  if (res) {
+    Message.success(res.msg)
+    search()
+  }
+};
+
+// 取消删除
+const handleCancel = () => {
+  Message.info('已取消删除');
+  isConfirmVisible.value = false;
+};
+
 const reset = () => {
-  form.name = ''
+  form.title = ''
   form.status = ''
   search()
 }
@@ -180,7 +255,11 @@ const onAdd = () => {
 }
 
 const onEdit = (item: MenuItem) => {
-  AddMenuModalRef.value?.edit(item.id)
+  AddMenuModalRef.value?.edit(item.menuId)
+}
+
+const statusChange = (value: string) => {
+  console.log(value)
 }
 
 const onViewCode = () => {

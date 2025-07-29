@@ -16,7 +16,7 @@
         <a-input-number v-model="form.dictSort" placeholder="请输入排序" :min="1" mode="button" style="width: 120px"/>
       </a-form-item>
       <a-form-item label="状态" field="dictStatus">
-        <CwrsSwitch v-model="form.dictStatus" :dict="sysStatus" />
+        <CwrsSwitch v-model="form.dictStatus" size="medium" />
       </a-form-item>
     </a-form>
   </a-modal>
@@ -43,12 +43,12 @@ const visible = ref(false)
 const { data: sysStatus } = useDict({ dictCode: 'sys_status' })
 
 const [form, resetForm] = useResetReactive({
-  dictId: undefined,
-  dictName: undefined,
-  dictCode: undefined,
+  dictId: '',
+  dictName: '',
+  dictCode: '',
   dictSort: 1,
   dictStatus: '1',
-  desc: undefined
+  desc: ''
 })
 
 const rules: FormInstance['rules'] = {
