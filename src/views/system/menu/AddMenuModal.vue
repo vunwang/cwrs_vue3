@@ -234,7 +234,7 @@ const save = async () => {
     const valid = await formRef.value?.validate()
     if (valid) return false
     let res = null;
-    form.parentId = form.parentId ? form.parentId : '0'
+    form.parentId = form.parentId || '0'
     if (isEdit.value) {
       //编辑
       if (form.type === '1') {

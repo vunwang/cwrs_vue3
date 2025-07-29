@@ -1,7 +1,7 @@
 <template>
   <a-modal v-model:visible="visible" :title="title" width="90%" :modal-style="{ maxWidth: '625px' }"
            :body-style="{ maxHeight: '70vh' }" :mask-closable="true" @before-ok="save" @close="close">
-    <a-form ref="formRef" :model="form" :rules="rules" auto-label-width>
+    <a-form ref="formRef" :model="form" auto-label-width>
       <a-form-item label="上级菜单" field="parentId">
         <a-tree-select v-model="form.parentId" placeholder="请选择上级菜单" allow-clear allow-search
                        :data="menuSelectTree" :field-names="{
@@ -54,10 +54,6 @@ const [form, resetForm] = useResetReactive<MenuForm>({
   menuIds: [],
 })
 
-const rules: FormInstance['rules'] = {
-  parentId: [{required: true, message: '请选择上级菜单'}],
-}
-
 const edits = async (menuIds: string[]) => {
   visible.value = true
   form.menuIds = menuIds
@@ -72,6 +68,7 @@ const save = async () => {
   try {
     const valid = await formRef.value?.validate()
     if (valid) return false
+    form.parentId = form.parentId || '0'
     const res = await editMenus(form)
     if (res) {
       Message.success(res.msg)
