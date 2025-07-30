@@ -3,10 +3,11 @@
            :modal-style="{ maxWidth: '520px' }" @before-ok="save" @close="close">
     <a-form ref="formRef" :model="form" :rules="rules" size="medium" auto-label-width>
       <a-form-item label="字典名称" field="dictName">
-        <a-input v-model.trim="form.dictName" placeholder="请输入字典名称" allow-clear :max-length="20"></a-input>
+        <a-input v-model.trim="form.dictName" placeholder="请输入字典名称" allow-clear :max-length="50"></a-input>
       </a-form-item>
       <a-form-item label="字典编码" field="dictCode">
-        <a-input v-model.trim="form.dictCode" placeholder="请输入字典编码" allow-clear :max-length="20"></a-input>
+        <a-input v-model.trim="form.dictCode" placeholder="请输入字典编码" :disabled="isEdit" allow-clear
+                 :max-length="20"></a-input>
       </a-form-item>
       <a-form-item label="描述" field="desc">
         <a-textarea v-model.trim="form.desc" placeholder="请填写描述" :max-length="200" show-word-limit
@@ -16,7 +17,7 @@
         <a-input-number v-model="form.dictSort" placeholder="请输入排序" :min="1" mode="button" style="width: 120px"/>
       </a-form-item>
       <a-form-item label="状态" field="dictStatus">
-        <CwrsSwitch v-model="form.dictStatus" size="medium" />
+        <CwrsSwitch v-model="form.dictStatus" size="medium"/>
       </a-form-item>
     </a-form>
   </a-modal>
@@ -40,7 +41,7 @@ const isEdit = computed(() => !!dictId.value)
 const title = computed(() => (isEdit.value ? '编辑字典' : '新增字典'))
 const visible = ref(false)
 
-const { data: sysStatus } = useDict({ dictCode: 'sys_status' })
+const {data: sysStatus} = useDict({dictCode: 'sys_status'})
 
 const [form, resetForm] = useResetReactive({
   dictId: '',

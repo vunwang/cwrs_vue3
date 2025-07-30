@@ -2,19 +2,19 @@
   <a-card title="菜单管理" class="gi_page_card">
     <a-row justify="space-between">
       <a-space wrap>
-        <a-button type="primary" @click="onAdd">
+        <a-button type="primary" v-hasPerm="['sys:menu:add']" @click="onAdd">
           <template #icon>
             <icon-plus/>
           </template>
           <span>新增</span>
         </a-button>
-        <a-button status="success" @click="onMulEdit">
+        <a-button status="success" v-hasPerm="['sys:menu:edit']" @click="onMulEdit">
           <template #icon>
             <icon-edit/>
           </template>
           <span>编辑</span>
         </a-button>
-        <a-button status="danger" @click="onMulDelete">
+        <a-button status="danger" v-hasPerm="['sys:menu:del']" @click="onMulDelete">
           <template #icon>
             <icon-delete/>
           </template>
@@ -44,7 +44,7 @@
 
       <a-space wrap>
         <a-input-group>
-          <CwrsSelect v-model="form.status" :options="sysStatus" :width="120" placeholder="状态"/>
+          <CwrsSelect v-model="form.status" :options="sysStatus" :width="120" placeholder="状态" allow-clear />
           <a-input v-model="form.title" placeholder="输入菜单名称搜索" allow-clear style="width: 250px">
             <template #prefix>
               <icon-search/>
@@ -67,8 +67,8 @@
     </a-row>
 
     <a-table ref="tableRef" class="gi_table" row-key="menuId" :data="menuList" :loading="loading"
-             :bordered="{ cell: true }"
-             :scroll="{ x: '100%', y: '100%', minWidth: 1700 }" :pagination="false" size="mini"
+             :bordered="{ cell: true }" size="mini"
+             :scroll="{ x: '100%', y: '100%', minWidth: 1700 }" :pagination="false"
              :row-selection="rowSelection" :selected-keys="selectedKeys"
              @select="select" @select-all="selectAll">
       <template #expand-icon="{ expanded }">
@@ -76,7 +76,7 @@
         <IconRight v-else/>
       </template>
       <template #columns>
-        <a-table-column title="菜单名称">
+        <a-table-column title="菜单名称" :width="200">
           <template #cell="{ record }">{{ record.title || '' }}</template>
         </a-table-column>
         <a-table-column title="类型" :width="80" align="center">
@@ -92,7 +92,7 @@
           <template #cell="{ record }">{{ transformPathToName(record.path) }}</template>
         </a-table-column>
         <a-table-column title="组件路径" data-index="component"></a-table-column>
-        <a-table-column title="权限标识" data-index="permission"></a-table-column>
+        <a-table-column title="权限标识" data-index="permission" :width="150"></a-table-column>
         <a-table-column title="菜单图标" data-index="icon" :width="100" align="center">
           <template #cell="{ record }">
             <CwrsSvgIcon v-if="record.svgIcon" :size="24" :name="record.svgIcon"></CwrsSvgIcon>
@@ -101,9 +101,11 @@
             </template>
           </template>
         </a-table-column>
-        <a-table-column title="状态" :width="150" align="center">
+        <a-table-column title="状态" :width="80" align="center">
           <template #cell="{ record }">
-            <CwrsSwitch v-model="record.status" size="small" @change="statusChange"/>
+            <a-popconfirm type="warning" content="确定切换该菜单状态吗?" @ok="statusOk(record)" @cancel="statusCancel">
+              <CwrsSwitch v-model="record.status" :disabled="!hasPerm('sys:menu:status')" size="small"/>
+            </a-popconfirm>
           </template>
         </a-table-column>
         <a-table-column title="是否缓存" :width="100" align="center">
@@ -124,10 +126,10 @@
             <a-tag v-else size="small" color="red">否</a-tag>
           </template>
         </a-table-column>
-        <a-table-column title="操作" :width="200" align="left" :fixed="fixed">
+        <a-table-column title="操作" :width="200" align="center" :fixed="fixed">
           <template #cell="{ record }">
             <a-space>
-              <a-button type="primary" size="mini" @click="onEdit(record)">
+              <a-button type="primary" v-hasPerm="['sys:menu:edit']" size="mini" @click="onEdit(record)">
                 <template #icon>
                   <icon-edit/>
                 </template>
@@ -138,8 +140,8 @@
                   <icon-plus/>
                 </template>
               </a-button>
-              <a-popconfirm type="warning" content="您确定要删除菜单吗?" @ok="onDelete(record)">
-                <a-button status="danger" size="mini" >
+              <a-popconfirm type="warning" content="确定删除该菜单吗?" @ok="onDelete(record)">
+                <a-button status="danger" v-hasPerm="['sys:menu:del']" size="mini">
                   <template #icon>
                     <icon-delete/>
                   </template>
@@ -161,12 +163,13 @@
 import {Drawer, Message} from '@arco-design/web-vue'
 import AddMenuModal from './AddMenuModal.vue'
 import EditMenusParentId from './EditMenusParentId.vue'
-import {getMenuList,delMenu} from '@/apis/system'
+import {getMenuList, delMenu, editMenuStatus} from '@/apis/system'
 import {isExternal} from '@/utils/validate'
 import {transformPathToName} from '@/utils'
 import {useDict} from '@/hooks/app'
 import {useTable} from '@/hooks'
 import CwrsCodeView from '@/components/CwrsCodeView/index.vue'
+import {hasPerm} from "@/utils/has";
 
 defineOptions({name: 'SystemMenu'})
 
@@ -254,12 +257,20 @@ const onAdd = () => {
   AddMenuModalRef.value?.add()
 }
 
-const onEdit = (item: MenuItem) => {
+const onEdit = (item: any) => {
   AddMenuModalRef.value?.edit(item.menuId)
 }
 
-const statusChange = (value: string) => {
-  console.log(value)
+const statusOk = async (record: any) => {
+  const res = await editMenuStatus({menuId: record.menuId, status: record.status})
+  if (res) {
+    Message.success(res.msg)
+    search()
+  }
+}
+
+const statusCancel = () => {
+  search()
 }
 
 const onViewCode = () => {

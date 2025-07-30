@@ -1,4 +1,3 @@
-import type * as T from './type'
 import http from '@/utils/http'
 
 /** 获取菜单数据 */
@@ -12,6 +11,7 @@ export function getMenuDetail(params: any) {
 }
 
 /** 获取角色分配权限菜单树 */
+//TODO
 export function getMenuOptions() {
     return http.get('/system/menu/getMenuOptions')
 }
@@ -39,6 +39,11 @@ export function addButton(params: any) {
 /** 批量更新菜单父节点 */
 export function editMenus(params: any) {
     return http.put('/sysMenu/editMenus', params)
+}
+
+/** 修改菜单状态 */
+export function editMenuStatus(params: any) {
+    return http.put('/sysMenu/editMenuStatus', params)
 }
 
 /** 更新目录 */

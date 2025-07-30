@@ -2,13 +2,13 @@
   <a-modal v-model:visible="visible" title="字典数据" width="60%" hide-cancel ok-text="关闭" :mask-closable="true">
     <a-row>
       <a-space wrap>
-        <a-button type="primary" @click="onAdd">
+        <a-button type="primary" v-hasPerm="['sys:dictItem:add']" @click="onAdd">
           <template #icon>
             <icon-plus/>
           </template>
           <span>新增</span>
         </a-button>
-        <a-button status="danger" @click="onMulDelete">
+        <a-button status="danger" v-hasPerm="['sys:dictItem:del']" @click="onMulDelete">
           <template #icon>
             <icon-delete/>
           </template>
@@ -44,14 +44,14 @@
         <a-table-column title="操作" :width="180" align="center">
           <template #cell="{ record }">
             <a-space>
-              <a-button type="primary" size="mini" @click="onEdit(record)">
+              <a-button type="primary" v-hasPerm="['sys:dictItem:edit']" size="mini" @click="onEdit(record)">
                 <template #icon>
                   <icon-edit/>
                 </template>
                 <span>编辑</span>
               </a-button>
               <a-popconfirm type="warning" style="width: 200px" content="确定删除该字典项吗?" @ok="onDelete(record)">
-                <a-button status="danger" size="mini">
+                <a-button status="danger" v-hasPerm="['sys:dictItem:del']" size="mini">
                   <template #icon>
                     <icon-delete/>
                   </template>

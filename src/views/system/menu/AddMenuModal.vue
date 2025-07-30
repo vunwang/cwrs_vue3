@@ -34,7 +34,7 @@
       </a-row>
 
       <a-form-item label="菜单标题" field="title">
-        <a-input v-model.trim="form.title" placeholder="请输入菜单标题" allow-clear :max-length="10"/>
+        <a-input v-model.trim="form.title" placeholder="请输入菜单标题" allow-clear :max-length="20"/>
       </a-form-item>
 
       <a-form-item v-if="['1', '2'].includes(form.type)" label="路由路径" field="path">
@@ -67,27 +67,31 @@
         </a-input>
       </a-form-item>
 
-      <a-row v-if="['1', '2'].includes(form.type)" :gutter="16">
+      <a-form-item v-if="form.type === '3'" label="权限标识" field="permission">
+        <a-input v-model.trim="form.permission" placeholder="sys:btn:add" allow-clear :max-length="50"/>
+      </a-form-item>
+
+      <a-row :gutter="16">
         <a-col v-bind="col3Props">
           <a-form-item label="状态" field="status">
             <CwrsSwitch v-model="form.status" size="medium" />
           </a-form-item>
         </a-col>
         <a-col v-bind="col3Props">
-          <a-form-item label="是否隐藏" field="hidden">
+          <a-form-item v-if="['1', '2'].includes(form.type)" label="是否隐藏" field="hidden">
             <a-switch v-model="form.hidden" type="round" :checked-value="true" :unchecked-value="false"
                       checked-text="是"
                       unchecked-text="否"/>
           </a-form-item>
         </a-col>
         <a-col v-bind="col3Props">
-          <a-form-item label="是否缓存" field="keepAlive">
+          <a-form-item v-if="['1', '2'].includes(form.type)" label="是否缓存" field="keepAlive">
             <a-switch v-model="form.keepAlive" type="round" :checked-value="true" :unchecked-value="false"
                       checked-text="是" unchecked-text="否"/>
           </a-form-item>
         </a-col>
         <a-col v-bind="col3Props">
-          <a-form-item label="面包屑" field="breadcrumb">
+          <a-form-item v-if="['1', '2'].includes(form.type)" label="面包屑" field="breadcrumb">
             <a-switch v-model="form.breadcrumb" type="round" :checked-value="true" :unchecked-value="false"
                       checked-text="显示" unchecked-text="隐藏"/>
           </a-form-item>
@@ -103,10 +107,6 @@
           </a-form-item>
         </a-col>
       </a-row>
-
-      <a-form-item v-if="form.type === '3'" label="权限标识" field="permission">
-        <a-input v-model.trim="form.permission" placeholder="sys:btn:add" allow-clear :max-length="20"/>
-      </a-form-item>
 
       <a-form-item label="菜单排序" field="sort">
         <a-input-number v-model="form.sort" placeholder="请输入菜单排序" :min="1" mode="button" style="width: 120px"/>
@@ -185,7 +185,7 @@ const routeName = computed(() => transformPathToName(form.path))
 const rules: FormInstance['rules'] = {
   parentId: [{required: true, message: '请选择上级菜单'}],
   title: [{required: true, message: '请输入菜单标题'}],
-  path: [{required: true, message: '请输入路由路径'}],
+  path: [{required: true, message: '请输入路由路径', match: /^\/[a-zA-Z0-9_/-]*$/, message: '路由路径必须包含/，且只能是/、英文字母、数字、下划线、-'}],
   component: [{required: true, message: '请输入组件路径'}],
   permission: [{required: true, message: '请输入权限标识'}]
 }

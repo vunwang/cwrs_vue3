@@ -1,26 +1,27 @@
 <template>
   <a-modal v-model:visible="visible" :title="title" width="90%" :mask-closable="true"
-    :modal-style="{ maxWidth: '520px' }" @before-ok="save" @close="close">
+           :modal-style="{ maxWidth: '520px' }" @before-ok="save" @close="close">
     <a-spin :loading="loading" class="w-full">
       <a-form ref="formRef" :model="form" :rules="rules" size="medium" auto-label-width>
         <a-form-item label="字典名" field="itemName">
-          <a-input v-model.trim="form.itemName" placeholder="请输入字典名" allow-clear :max-length="20"></a-input>
+          <a-input v-model.trim="form.itemName" placeholder="请输入字典名" allow-clear :max-length="50"></a-input>
         </a-form-item>
         <a-form-item label="字典值" field="itemValue">
-          <a-input v-model.trim="form.itemValue" placeholder="请输入字典值" allow-clear :max-length="20"></a-input>
+          <a-input v-model.trim="form.itemValue" :disabled="isEdit" placeholder="请输入字典值" allow-clear
+                   :max-length="20"></a-input>
         </a-form-item>
         <a-form-item label="描述" field="desc">
           <a-textarea v-model.trim="form.desc" placeholder="请填写描述" :max-length="200" show-word-limit
                       :auto-size="{ minRows: 3, maxRows: 5 }"/>
         </a-form-item>
         <a-form-item label="排序" field="itemSort">
-          <a-input-number v-model="form.itemSort" placeholder="请输入排序" :min="1" mode="button" style="width: 120px" />
+          <a-input-number v-model="form.itemSort" placeholder="请输入排序" :min="1" mode="button" style="width: 120px"/>
         </a-form-item>
         <a-form-item label="颜色" field="itemColor">
           <a-color-picker v-model="form.itemColor" defaultValue="#F1590E" showText disabledAlpha showPreset/>
         </a-form-item>
         <a-form-item label="状态" field="itemStatus">
-          <CwrsSwitch v-model="form.itemStatus" size="medium" />
+          <CwrsSwitch v-model="form.itemStatus" size="medium"/>
         </a-form-item>
       </a-form>
     </a-spin>
@@ -29,9 +30,9 @@
 
 <script setup lang="ts">
 import _ from 'lodash';
-import { type FormInstance, Message } from '@arco-design/web-vue'
-import { getDictItemDetail, addDictItem, editDictItem } from '@/apis/system'
-import { useResetReactive } from '@/hooks'
+import {type FormInstance, Message} from '@arco-design/web-vue'
+import {getDictItemDetail, addDictItem, editDictItem} from '@/apis/system'
+import {useResetReactive} from '@/hooks'
 import * as Regexp from "@/utils/regexp";
 import {useDict} from "@/hooks/app";
 
@@ -58,14 +59,14 @@ const [form, resetForm] = useResetReactive({
 })
 
 const rules: FormInstance['rules'] = {
-  itemName: [{ required: true, message: '请输入字典名' }],
+  itemName: [{required: true, message: '请输入字典名'}],
   itemValue: [
-    { required: true, message: '请输入字典值' },
-    { match: Regexp.EnNumAndUnderline, message: '格式不对！只能包含英文数字下划线' }
+    {required: true, message: '请输入字典值'},
+    {match: Regexp.EnNumAndUnderline, message: '格式不对！只能包含英文数字下划线'}
   ],
-  itemSort: [{ required: true, message: '请输入排序' }],
-  itemColor: [{ required: true }],
-  itemStatus: [{ required: true }]
+  itemSort: [{required: true, message: '请输入排序'}],
+  itemColor: [{required: true}],
+  itemStatus: [{required: true}]
 }
 
 const add = (dictCode: string) => {
@@ -104,5 +105,5 @@ const save = async () => {
   }
 }
 
-defineExpose({ add, edit })
+defineExpose({add, edit})
 </script>

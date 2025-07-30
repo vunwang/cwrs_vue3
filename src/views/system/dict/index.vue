@@ -2,13 +2,13 @@
   <a-card title="字典管理" class="gi_page_card">
     <a-row justify="space-between">
       <a-space wrap>
-        <a-button type="primary" @click="onAdd">
+        <a-button type="primary" v-hasPerm="['sys:dict:add']" @click="onAdd">
           <template #icon>
             <icon-plus/>
           </template>
           <span>新增</span>
         </a-button>
-        <a-button status="danger" @click="onMulDelete">
+        <a-button status="danger" v-hasPerm="['sys:dict:del']" @click="onMulDelete">
           <template #icon>
             <icon-delete/>
           </template>
@@ -22,7 +22,7 @@
 
       <a-space wrap>
         <a-input-group>
-          <CwrsSelect v-model="form.dictStatus" :options="sysStatus" :width="120" placeholder="状态"/>
+          <CwrsSelect v-model="form.dictStatus" :options="sysStatus" :width="120" placeholder="状态" allow-clear/>
           <a-input v-model="form.dictName" placeholder="字典类型名称/编码" allow-clear style="width: 250px">
             <template #prefix>
               <icon-search/>
@@ -62,7 +62,7 @@
         <a-table-column title="排序" data-index="dictSort" :width="80"></a-table-column>
         <a-table-column title="描述" data-index="desc" :ellipsis="true" :tooltip="true"></a-table-column>
         <a-table-column title="创建时间" data-index="createdTime" :width="180">
-          <template #cell="cell">{{ parseTime(cell.record.createdTime) }}</template>
+          <template #cell="{record}">{{ parseTime(record.createdTime) }}</template>
         </a-table-column>
         <a-table-column title="操作" :width="280" align="center" :fixed="fixed">
           <template #cell="{ record }">
@@ -73,14 +73,14 @@
                 </template>
                 <span>数据</span>
               </a-button>
-              <a-button type="primary" size="mini" @click="onEdit(record)">
+              <a-button type="primary" v-hasPerm="['sys:dict:edit']" size="mini" @click="onEdit(record)">
                 <template #icon>
                   <icon-edit/>
                 </template>
                 <span>编辑</span>
               </a-button>
               <a-popconfirm type="warning" style="width: 180px" content="确定删除该字典吗?" @ok="onDelete(record)">
-                <a-button status="danger" size="mini">
+                <a-button status="danger" v-hasPerm="['sys:dict:del']" size="mini">
                   <template #icon>
                     <icon-delete/>
                   </template>
