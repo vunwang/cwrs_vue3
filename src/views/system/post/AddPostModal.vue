@@ -69,10 +69,6 @@ const emit = defineEmits<{
   (e: 'save-success'): void
 }>()
 
-const { roleList, getRoleList } = useRole()
-getRoleList()
-const roleOptions = computed(() => roleList.value.map((i) => ({ label: i.name, value: i.code })))
-
 const { deptList, getDeptList } = useDept()
 getDeptList()
 
