@@ -63,22 +63,27 @@ http.interceptors.response.use(
         const {msg, code} = data
 
         if (code && code !== 200) {
+            NProgress.done()
+            Message.error(msg)
             // token失效
             if (code === 401) {
-                NProgress.done()
                 router.replace('/login')
             }
-            return Promise.reject(new Error(msg));
+            return Promise.reject(new Error(msg))
         }
 
         NProgress.done()
         return response
-    },
-    (error) => {
+    }, (error) => {
         NProgress.done()
         Message.clear()
         const response = Object.assign({}, error.response)
-        response && Message.error(response.data.msg)
+        response && Message.error(response.data.msg || '系统异常, 请检查网络或联系管理员！')
+        if (response.status === 401) {
+            NProgress.done()
+            router.replace('/login')
+            return Promise.reject(new Error(msg))
+        }
         return Promise.reject(error)
     }
 )
