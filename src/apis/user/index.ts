@@ -16,7 +16,7 @@ export function getUserIdentity(data: { account: string }) {
 
 /** 退出登录 */
 export function logout() {
-  return http.post('/user/logout')
+  return http.get('/sysLogin/logout')
 }
 
 /** 获取用户信息 */

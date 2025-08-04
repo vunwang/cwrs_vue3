@@ -59,18 +59,12 @@ http.interceptors.request.use(
 // 响应拦截器
 http.interceptors.response.use(
     (response: AxiosResponse) => {
-        const {data} = response
-        const {msg, code} = data
-
-        if (code && code !== 200) {
-            NProgress.done()
-            Message.error(msg)
-            // token失效
-            if (code === 401) {
-                router.replace('/login')
-            }
-            return Promise.reject(new Error(msg))
-        }
+        // const {data} = response
+        // const {msg, code} = data
+        // if (code !== 200) {
+        //     Message.error(msg)
+        //     return Promise.reject(new Error(msg))
+        // }
 
         NProgress.done()
         return response
@@ -80,9 +74,7 @@ http.interceptors.response.use(
         const response = Object.assign({}, error.response)
         response && Message.error(response.data.msg || '系统异常, 请检查网络或联系管理员！')
         if (response.status === 401) {
-            NProgress.done()
             router.replace('/login')
-            return Promise.reject(new Error(msg))
         }
         return Promise.reject(error)
     }

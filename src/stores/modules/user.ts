@@ -10,7 +10,6 @@ import {
     logout as logoutApi
 } from '@/apis/user'
 import {clearMenuId, clearToken, getToken, setToken} from '@/utils/auth'
-import {useDictStore} from "@/stores";
 
 /** 登录参数接口 */
 interface LoginParams {
@@ -106,12 +105,14 @@ const storeSetup = () => {
      */
     const logout = async (): Promise<boolean> => {
         try {
-            await logoutApi()
-            // 清除用户状态
-            token.value = ''
-            permissions.value = []
-            resetToken()
-            resetRouter()
+            const res = await logoutApi()
+            if (res.code === 401) {
+                // 清除用户状态
+                token.value = ''
+                resetToken()
+                resetRouter()
+                permissions.value = []
+            }
             return true
         } catch (error) {
             console.error('退出失败:', error)
@@ -151,9 +152,7 @@ const storeSetup = () => {
             if (roleId) {
                 permissions.value = userPermissions || []
             }
-            //登录成功初始化数据字典信息
-            const dictStore = useDictStore()
-            dictStore.getDictData()
+            return true
         } catch (error) {
             console.error('获取用户信息失败:', error)
             throw error

@@ -33,7 +33,6 @@ const storeSetup = () => {
       }
     } catch (error) {
       console.error('获取字典数据失败:', error)
-      throw error
     }
   }
 

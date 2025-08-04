@@ -2,17 +2,21 @@
   <a-config-provider update-at-scroll>
     <router-view></router-view>
     <template #loading>
-      <img src="/static/images/loading.gif" class="loading-icon" />
+      <img src="/static/images/loading.gif" class="loading-icon"/>
     </template>
   </a-config-provider>
 </template>
 
 <script setup lang="ts">
-import { useAppStore } from '@/stores'
+import {useAppStore, useDictStore} from '@/stores'
 
-defineOptions({ name: 'App' })
+defineOptions({name: 'App'})
 const appStore = useAppStore()
 appStore.initTheme()
+
+// 初始化字典
+const dictStore = useDictStore()
+dictStore.getDictData()
 </script>
 
 <style lang="scss" scoped>
