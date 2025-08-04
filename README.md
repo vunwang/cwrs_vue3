@@ -18,11 +18,15 @@
 普通用户: user  123456
 ```
 
-### 代码仓库
-- gitee地址：<a href="https://gitee.com/open-source-project_7/cwrs_vue3.git" target="_blank">cwrs_vue3</a>
+### 前端代码仓库
+- gitee地址：<a href="https://gitee.com/open-source-project_7/cwrs_vue3" target="_blank">cwrs_vue3</a>
 
 [//]: # (- github地址：<a href="" target="_blank">cwrs_vue3</a>)
 
+### GO后端代码仓库
+- gitee地址：<a href="https://gitee.com/open-source-project_7/cwrs_go_server" target="_blank">cwrs_go_server</a>
+
+[//]: # (- github地址：<a href="" target="_blank">cwrs_go_server</a>)
 
 ### 安装使用
 - 安装依赖
