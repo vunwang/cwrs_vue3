@@ -93,20 +93,27 @@ const request = <T = unknown>(config: AxiosRequestConfig): Promise<ApiRes<T>> =>
     })
 }
 
-function filterEmptyStrings<T extends Record<string, any>>(obj: T): Partial<T> {
+function filterEmptyStringsAndTrim<T extends Record<string, any>>(obj: T): Partial<T> {
     const result: Partial<T> = {};
 
-    for (const key in obj) {
-        if (obj.hasOwnProperty(key)) {
-            const value = obj[key];
-            // 检查是否为非空字符串
-            if (typeof value === 'string' && value.trim() !== '') {
-                result[key] = value;
-            } else if (typeof value !== 'string') { // 如果不是字符串，则直接添加
-                result[key] = value;
-            }
+    Object.entries(obj).forEach(([key, value]) => {
+        // 检查 value 是否为 null 或 undefined，如果是则跳过
+        if (value === null || value === undefined) {
+            return; // 直接跳过本次循环，不添加到 result
         }
-    }
+
+        if (typeof value === 'string') {
+            // 对于字符串类型，先 trim() 去除首尾空白
+            const trimmedValue = value.trim();
+            // 如果 trim() 后不为空，则将**去除空格后的值**添加到result 如果 trim() 后为空，则跳过（不添加）
+            if (trimmedValue !== '') {
+                result[key as keyof T] = trimmedValue as T[keyof T]; // 注意类型
+            }
+        } else {
+            // 对于非字符串类型（且不为 null/undefined），直接添加
+            result[key as keyof T] = value;
+        }
+    });
 
     return result;
 }
@@ -116,7 +123,7 @@ const get = <T = any>(url: string, params?: object, config?: AxiosRequestConfig)
     return request({
         method: 'get',
         url,
-        params: params ? filterEmptyStrings(params) : undefined,
+        params: params ? filterEmptyStringsAndTrim(params) : params,
         ...config
     })
 }
@@ -126,7 +133,7 @@ const post = <T = any>(url: string, params?: object, config?: AxiosRequestConfig
     return request({
         method: 'post',
         url,
-        data: params ? filterEmptyStrings(params) : undefined,
+        data: params ? filterEmptyStringsAndTrim(params) : params,
         ...config
     })
 }
@@ -136,7 +143,7 @@ const put = <T = any>(url: string, params?: object, config?: AxiosRequestConfig)
     return request({
         method: 'put',
         url,
-        data: params ? filterEmptyStrings(params) : undefined,
+        data: params ? filterEmptyStringsAndTrim(params) : params,
         ...config
     })
 }
@@ -146,7 +153,7 @@ const del = <T = any>(url: string, params?: object, config?: AxiosRequestConfig)
     return request({
         method: 'delete',
         url,
-        params: params ? filterEmptyStrings(params) : undefined,
+        params: params ? filterEmptyStringsAndTrim(params) : params,
         ...config
     })
 }

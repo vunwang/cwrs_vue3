@@ -14,7 +14,7 @@
               key: 'deptId',
               title: 'deptName',
               children: 'children',
-            }" @select="search">
+            }" @select="treeCheck">
             </a-tree>
           </a-scrollbar>
         </div>
@@ -126,7 +126,7 @@ import AddPostModal from './AddPostModal.vue'
 import PostDetailDrawer from './PostDetailDrawer.vue'
 import {useTable} from '@/hooks'
 import {useDept, useDict} from '@/hooks/app'
-import {getPostList, delSysPost, delDict} from '@/apis/system'
+import {getPostList, delSysPost} from '@/apis/system'
 import {parseTime} from "@/utils/time";
 
 defineOptions({name: 'SystemPost'})
@@ -159,6 +159,7 @@ const {
   pagination,
   selectedKeys,
   select,
+  search,
   selectAll,
   fixed
 } = useTable(() => getPostList(form), {immediate: true, rowKey: 'postId'})
@@ -177,13 +178,12 @@ const reset = () => {
  * @param selectedKeys 选中的节点的 key（即 deptId）数组
  * @param info 包含更多关于选择的信息
  */
-const search = (selectedKeys: string[], info: any) => {
+const treeCheck = (selectedKeys: string[], info: any) => {
   if (selectedKeys && selectedKeys.length > 0) {
     // 如果是单选，则取第一个元素
     form.deptId = selectedKeys[0];
   }
-  pagination.onChange(1)
-  getPostList(form)
+  search()
 }
 
 // 批量删除
