@@ -2,7 +2,8 @@
   <a-card title="岗位管理" class="gi_page_card">
     <CwrsSplitPane>
       <template #left>
-        <a-input v-model="treeInputValue" placeholder="输入组织名称搜索" allow-clear :style="{ marginBottom: '8px' }" @change="getDeptList">
+        <a-input v-model="treeInputValue" placeholder="输入组织名称搜索" allow-clear :style="{ marginBottom: '8px' }"
+                 @change="queryDeptList">
           <template #prefix>
             <icon-search/>
           </template>
@@ -28,18 +29,22 @@
             <span>新增</span>
           </a-button>
 
-          <a-button type="primary" status="danger" @click="onMulDelete">
+          <a-button status="danger" @click="onMulDelete">
             <template #icon>
               <icon-delete/>
             </template>
             <span>删除</span>
           </a-button>
+          <!-- 确认框 -->
+          <a-modal v-model:visible="isConfirmVisible" width="300px" title="确认删除" @ok="handleDelete" @cancel="handleCancel">
+            <p>确定要删除选中的数据吗？</p>
+          </a-modal>
         </a-space>
 
         <a-space wrap>
           <a-input-group>
-            <CwrsSelect v-model="form.postStatus" :options="sysStatus" :width="120" placeholder="状态" allow-clear />
-            <a-input v-model="form.postName" placeholder="输入岗位名称搜索" allow-clear style="max-width: 250px">
+            <CwrsSelect v-model="form.postStatus" :options="sysStatus" :width="120" placeholder="状态" allow-clear/>
+            <a-input v-model="form.postName" placeholder="输入岗位名称搜索" allow-clear style="width: 250px">
               <template #prefix>
                 <icon-search/>
               </template>
@@ -61,31 +66,32 @@
       </a-row>
 
       <a-table class="gi_table" row-key="postId" :loading="loading" :data="postList" :bordered="{ cell: true }"
-               :scroll="{ x: '100%', y: '100%', minWidth: 1700 }" :pagination="pagination"
+               :scroll="{ x: '100%', y: '100%', minWidth: 1000 }" :pagination="pagination"
                :row-selection="{ type: 'checkbox', showCheckedAll: true }" :selected-keys="selectedKeys"
                @select="select"
                @select-all="selectAll">
         <template #columns>
-          <a-table-column title="序号" :width="64">
+          <a-table-column title="序号" :width="60">
             <template #cell="cell">{{ cell.rowIndex + 1 }}</template>
           </a-table-column>
-          <a-table-column title="岗位名称" data-index="postName" :width="120">
+          <a-table-column title="岗位名称" data-index="postName" :width="150">
             <template #cell="{ record }">
               <a-link @click="openDetail(record)">{{ record.postName }}</a-link>
             </template>
           </a-table-column>
           <a-table-column title="岗位编码" data-index="postCode" :width="150"/>
+          <a-table-column title="所属组织" data-index="deptName" :width="180"></a-table-column>
           <a-table-column title="状态" :width="100" align="center">
             <template #cell="{ record }">
-              <CwrsCellTag :status="record.postStatus"></CwrsCellTag>
+              <CwrsCellTag :value="record.postStatus" :dict="sysStatus"></CwrsCellTag>
             </template>
           </a-table-column>
           <a-table-column title="排序" data-index="postSort" :width="80" align="center"/>
-          <a-table-column title="所属组织" data-index="deptName" :width="180"></a-table-column>
-          <a-table-column title="描述" :width="200" data-index="desc" :ellipsis="true"
-                          :tooltip="true"/>
-          <a-table-column title="创建时间" data-index="createTime" :width="200"></a-table-column>
-          <a-table-column title="操作" :width="180" align="center" :fixed="fixed">
+          <a-table-column title="描述" data-index="desc" :ellipsis="true" :tooltip="true"></a-table-column>
+          <a-table-column title="创建时间" data-index="createTime" :width="180">
+            <template #cell="{record}">{{ parseTime(record.createdTime) }}</template>
+          </a-table-column>
+          <a-table-column title="操作" :width="200" align="center" :fixed="fixed">
             <template #cell="{ record }">
               <a-space>
                 <a-button type="primary" size="mini" @click="onEdit(record)">
@@ -94,8 +100,8 @@
                   </template>
                   <span>编辑</span>
                 </a-button>
-                <a-popconfirm type="warning" content="确定删除该用户吗?">
-                  <a-button type="primary" status="danger" size="mini" :disabled="record.disabled">
+                <a-popconfirm type="warning" content="确定删除该岗位吗?" @ok="onDelete(record)">
+                  <a-button status="danger" size="mini">
                     <template #icon>
                       <icon-delete/>
                     </template>
@@ -120,11 +126,13 @@ import AddPostModal from './AddPostModal.vue'
 import PostDetailDrawer from './PostDetailDrawer.vue'
 import {useTable} from '@/hooks'
 import {useDept, useDict} from '@/hooks/app'
-import {getPostList} from '@/apis/system'
+import {getPostList, delSysPost, delDict} from '@/apis/system'
+import {parseTime} from "@/utils/time";
 
 defineOptions({name: 'SystemPost'})
 
 const {data: sysStatus} = useDict({dictCode: 'sys_status'})
+
 const treeRef = useTemplateRef('treeRef')
 const AddPostModalRef = useTemplateRef('AddPostModalRef')
 const PostDetailDrawerRef = useTemplateRef('PostDetailDrawerRef')
@@ -139,29 +147,75 @@ const {deptList, getDeptList} = useDept({
 })
 getDeptList()
 
-const form = reactive({postStatus: '', postName: ''})
+const queryDeptList = () => {
+  getDeptList({deptName: treeInputValue.value})
+}
+
+const form = reactive({pageNum: 1, pageSize: 10, postId: '', postStatus: '', postName: '', deptId: ''})
 
 const {
   loading,
   tableData: postList,
   pagination,
   selectedKeys,
-  search,
   select,
   selectAll,
   fixed
 } = useTable(() => getPostList(form), {immediate: true, rowKey: 'postId'})
 
 const reset = () => {
-  form.postStatus = ''
+  form.deptId = ''
   form.postName = ''
+  form.postStatus = ''
+  treeInputValue.value = ''
   search()
+  getDeptList()
+}
+
+/**
+ * search 方法用于处理树节点选择事件
+ * @param selectedKeys 选中的节点的 key（即 deptId）数组
+ * @param info 包含更多关于选择的信息
+ */
+const search = (selectedKeys: string[], info: any) => {
+  if (selectedKeys && selectedKeys.length > 0) {
+    // 如果是单选，则取第一个元素
+    form.deptId = selectedKeys[0];
+  }
+  pagination.onChange(1)
+  getPostList(form)
 }
 
 // 批量删除
-const onMulDelete = () => {
+const isConfirmVisible = ref(false);
+const onMulDelete = async () => {
   if (!selectedKeys.value.length) {
-    return Message.warning('请选择用户！')
+    return Message.warning('请选择字典！')
+  }
+  isConfirmVisible.value = true;
+}
+
+// 删除
+const handleDelete = async () => {
+  const postIds = Object.values(selectedKeys.value).toString()
+  const res = await delSysPost({postIds: postIds})
+  if (res) {
+    Message.success(res.msg)
+    search()
+  }
+};
+
+// 取消删除
+const handleCancel = () => {
+  Message.info('已取消删除');
+  isConfirmVisible.value = false;
+};
+
+const onDelete = async (item: any) => {
+  const res = await delSysPost({postIds: item.postId})
+  if (res) {
+    Message.success(res.msg)
+    search()
   }
 }
 
@@ -170,11 +224,11 @@ const onAdd = () => {
 }
 
 const onEdit = (item: any) => {
-  AddPostModalRef.value?.edit(item.id)
+  AddPostModalRef.value?.edit(item.postId)
 }
 
 const openDetail = (item: any) => {
-  PostDetailDrawerRef.value?.open(item.id)
+  PostDetailDrawerRef.value?.open(item.postId)
 }
 </script>
 

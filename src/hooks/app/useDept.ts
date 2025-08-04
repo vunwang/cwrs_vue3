@@ -7,10 +7,10 @@ export function useDept(options?: { onSuccess?: () => void }) {
   const loading = ref(false)
   const deptList = ref<any[]>([])
 
-  const getDeptList = async () => {
+  const getDeptList = async (params: any) => {
     try {
       loading.value = true
-      const res = await getDeptListApi({ deptName: deptName })
+      const res = await getDeptListApi(params)
       deptList.value = mapTree(res.data, (i) => {
         if (i.children?.length) {
           i.children = i.children.filter((i) => i.deptStatus === '1')

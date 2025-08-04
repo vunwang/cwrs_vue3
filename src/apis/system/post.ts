@@ -13,12 +13,12 @@ export function addSysPost(params: any) {
 
 /** 编辑岗位 */
 export function editSysPost(params: any) {
-  return http.post('/sysPost/edit', params)
+  return http.put('/sysPost/edit', params)
 }
 
 /** 删除岗位 */
 export function delSysPost(params: any) {
-  return http.post('/sysPost/del', params)
+  return http.del('/sysPost/del', params)
 }
 
 /** 获取岗位详情 */
