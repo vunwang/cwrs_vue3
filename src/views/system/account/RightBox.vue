@@ -2,31 +2,29 @@
   <div class="right-box">
     <section class="right-box__header">
       <a-avatar :size="60" :trigger-icon-style="{ color: '#3491FA' }">
-        <img :src="userStore.avatar" />
+        <img v-if ="userStore.avatar" :src="userStore.avatar" />
+        <img v-else src="@/assets/images/logo.png" />
         <template #trigger-icon>
           <IconCamera />
         </template>
       </a-avatar>
-      <section class="username">{{ userStore.name }}</section>
+      <section class="username">{{ userStore.nickName }}</section>
       <ul class="list">
-        <li><icon-user /><span>前端开发工程师</span></li>
-        <li><icon-safe /><span>前端</span></li>
-        <li><icon-location /><span>广州</span></li>
+        <li><icon-user /><span>{{ userStore.userName }}</span></li>
+        <li><icon-phone /><span>{{ userStore.userPhone }}</span></li>
+        <li><icon-email /><span>{{ userStore.email || '-' }}</span></li>
       </ul>
       <a-button type="primary" class="edit-btn">
         <template #icon> <icon-edit /> </template>编辑信息
       </a-button>
     </section>
 
-    <a-tabs hide-content default-active-key="2">
+    <a-tabs hide-content default-active-key="1">
       <a-tab-pane key="1">
         <template #title>文章</template>
       </a-tab-pane>
       <a-tab-pane key="2">
         <template #title>项目</template>
-      </a-tab-pane>
-      <a-tab-pane key="3">
-        <template #title>应用（3）</template>
       </a-tab-pane>
     </a-tabs>
 
@@ -68,38 +66,26 @@
 <script setup lang="ts">
 import { useUserStore } from '@/stores'
 
-const userStore = useUserStore()
+const userStore = useUserStore().userInfo
 
 const list = [
   {
     avatar:
-      'https://p1-arco.byteimg.com/tos-cn-i-uwbnlip3yd/3ee5f13fb09879ecb5185e440cef6eb9.png~tplv-uwbnlip3yd-webp.webp',
-    name: 'Lin',
+      'https://p1-arco.byteimg.com/tos-cn-i-uwbnlip3yd/6480dbc69be1b5de95010289787d64f1.png~tplv-uwbnlip3yd-webp.webp',
+    name: 'vn_wang',
     text: '生活会让你苦上一阵子，等你适应以后，再让你苦上一辈子'
   },
   {
     avatar:
-      'https://p1-arco.byteimg.com/tos-cn-i-uwbnlip3yd/3ee5f13fb09879ecb5185e440cef6eb9.png~tplv-uwbnlip3yd-webp.webp',
-    name: 'Lin',
+      'https://p1-arco.byteimg.com/tos-cn-i-uwbnlip3yd/cd7a1aaea8e1c5e3d26fe2591e561798.png~tplv-uwbnlip3yd-webp.webp',
+    name: 'vn_wang',
     text: '我从一无所有，到资产过亿，从家徒四壁，到豪车别墅，这些不是靠的别人，完全是靠我自己，一点一滴，想出来的'
   },
   {
     avatar:
       'https://p1-arco.byteimg.com/tos-cn-i-uwbnlip3yd/3ee5f13fb09879ecb5185e440cef6eb9.png~tplv-uwbnlip3yd-webp.webp',
-    name: 'Lin',
+    name: 'vn_wang',
     text: '有很多事情你当时想不通，别着急，过一段时间你再想，就想不起来了'
-  },
-  {
-    avatar:
-      'https://p1-arco.byteimg.com/tos-cn-i-uwbnlip3yd/3ee5f13fb09879ecb5185e440cef6eb9.png~tplv-uwbnlip3yd-webp.webp',
-    name: 'Lin',
-    text: '⽐你优秀的⼈都⽐你努⼒，你努力还有什么用'
-  },
-  {
-    avatar:
-      'https://p1-arco.byteimg.com/tos-cn-i-uwbnlip3yd/3ee5f13fb09879ecb5185e440cef6eb9.png~tplv-uwbnlip3yd-webp.webp',
-    name: '窃·格瓦拉',
-    text: '打工这辈子是不可能打工的，做生意又不会做，就是偷这种东西，才可以维持生活这样子'
   }
 ]
 </script>

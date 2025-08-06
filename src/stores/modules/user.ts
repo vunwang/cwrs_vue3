@@ -30,7 +30,13 @@ const storeSetup = () => {
         userName: '',
         userPhone: '',
         nickName: '',
+        signature: '',
         userId: '',
+        email: '',
+        gender: '',
+        birth: '',
+        userStatus: '',
+        desc: '',
         deptId: '',
         roleId: '',
         avatar: ''
@@ -129,12 +135,18 @@ const storeSetup = () => {
         try {
             const res = await getUserInfoApi()
             const {
-                userId,
                 userName,
                 userPhone,
                 nickName,
-                roleId,
+                userId,
+                signature,
+                email,
+                gender,
+                birth,
+                userStatus,
+                desc,
                 deptId,
+                roleId,
                 avatar,
                 permissions: userPermissions
             } = res.data
@@ -147,6 +159,12 @@ const storeSetup = () => {
             userInfo.roleId = roleId
             userInfo.deptId = deptId
             userInfo.avatar = avatar
+            userInfo.signature = signature
+            userInfo.email = email
+            userInfo.gender = gender
+            userInfo.birth = birth
+            userInfo.userStatus = userStatus
+            userInfo.desc = desc
 
             // 更新用户角色和权限
             if (roleId) {

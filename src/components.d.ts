@@ -31,6 +31,7 @@ declare module 'vue' {
     CwrsTable: typeof import('./components/CwrsTable/src/CwrsTable.vue')['default']
     CwrsTag: typeof import('./components/CwrsTag/index.tsx')['default']
     CwrsThemeBtn: typeof import('./components/CwrsThemeBtn/index.vue')['default']
+    CwrsTreeSelect: typeof import('./components/CwrsTreeSelect/index.vue')['default']
     GiForm: typeof import('./components/CwrsForm/src/GiForm.vue')['default']
     GwrsSplitPane: typeof import('@/components/CwrsSplitPane/index.vue')['default']
     Icon403: typeof import('./components/icons/Icon403.vue')['default']

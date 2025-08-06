@@ -1,5 +1,5 @@
 <template>
-  <a-select v-model="localValue" :style="{ width: width + 'px' }" :placeholder="placeholder" allow-clear>
+  <a-select v-model="localValue" :style="{ width: width + 'px' }" :placeholder="placeholder" allow-clear :allow-search="allowSearch">
     <a-option v-for="item of options" :value="item.itemValue" :label="item.itemName" :disabled="item.itemStatus == '0'"/>
   </a-select>
 </template>
@@ -12,6 +12,7 @@ const props = defineProps<{
   options: { itemName: string; itemValue: string; itemStatus?: string }[]
   width?: number
   placeholder?: string
+  allowSearch?: boolean
 }>()
 
 const emit = defineEmits<{

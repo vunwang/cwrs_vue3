@@ -10,3 +10,8 @@ export function getUserList(params: Pagination) {
 export function getUserDetail(params: { id: string }) {
   return http.get('/system/user/getUserDetail', params)
 }
+
+/** 修改密码 */
+export function editPassword(params: any) {
+  return http.put('/sysUser/editPassword', params)
+}

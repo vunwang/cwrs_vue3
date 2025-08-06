@@ -165,12 +165,12 @@ const {
 } = useTable(() => getPostList(form), {immediate: true, rowKey: 'postId'})
 
 const reset = () => {
-  form.deptId = ''
+  // form.deptId = ''
+  // treeInputValue.value = ''
+  // getDeptList()
   form.postName = ''
   form.postStatus = ''
-  treeInputValue.value = ''
   search()
-  getDeptList()
 }
 
 /**

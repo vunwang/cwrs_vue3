@@ -59,12 +59,17 @@ http.interceptors.request.use(
 // 响应拦截器
 http.interceptors.response.use(
     (response: AxiosResponse) => {
-        // const {data} = response
-        // const {msg, code} = data
-        // if (code !== 200) {
-        //     Message.error(msg)
-        //     return Promise.reject(new Error(msg))
-        // }
+        const {data} = response
+        const {msg, code} = data
+        if (code && code !== 200) {
+            if (code === 401) {
+                router.replace('/login')
+                Message.success(msg)
+                return Promise.reject(msg)
+            }
+            Message.error(msg)
+            return Promise.reject(new Error(msg))
+        }
 
         NProgress.done()
         return response

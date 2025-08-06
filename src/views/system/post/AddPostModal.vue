@@ -3,11 +3,7 @@
            :modal-style="{ maxWidth: '600px' }" :body-style="{ maxHeight: '70vh' }" @before-ok="save" @close="close">
     <a-form ref="formRef" :model="form" :rules="rules" size="medium" auto-label-width>
       <a-form-item label="所属组织" field="deptId">
-        <a-tree-select v-model="form.deptId" :data="deptList" :field-names="{
-          key: 'deptId',
-          title: 'deptName',
-          children: 'children',
-        }" placeholder="请选择所属组织" allow-clear allow-search/>
+        <CwrsTreeSelect v-model="form.deptId" placeholder="请选择所属组织" />
       </a-form-item>
 
       <a-form-item label="岗位名称" field="postName">
@@ -16,7 +12,8 @@
       </a-form-item>
 
       <a-form-item label="岗位编号" field="postCode">
-        <a-input v-model.trim="form.postCode" placeholder="请输入岗位编号" :disabled="isEdit" allow-clear :max-length="20" ></a-input>
+        <a-input v-model.trim="form.postCode" placeholder="请输入岗位编号" :disabled="isEdit" allow-clear
+                 :max-length="20"></a-input>
       </a-form-item>
 
       <a-form-item label="描述" field="desc">
@@ -38,15 +35,11 @@
 <script setup lang="ts">
 import {type FormInstance, Message} from '@arco-design/web-vue'
 import {getPostDetail, editSysPost, addSysPost} from '@/apis/system'
-import {useDept} from '@/hooks/app'
 import {useResetReactive} from '@/hooks'
 
 const emit = defineEmits<{
   (e: 'save-success'): void
 }>()
-
-const {deptList, getDeptList} = useDept()
-getDeptList()
 
 const formRef = useTemplateRef('formRef')
 const postId = ref('')

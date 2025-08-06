@@ -79,12 +79,14 @@
   </a-row>
 
   <SettingDrawer ref="SettingDrawerRef"></SettingDrawer>
+  <EditUserPwdModal ref="EditUserPwdModalRef"></EditUserPwdModal>
 </template>
 
 <script setup lang="ts">
 import { Message, Modal } from '@arco-design/web-vue'
 import { useFullscreen } from '@vueuse/core'
 import SettingDrawer from './SettingDrawer.vue'
+import EditUserPwdModal from './components/EditUserPwdModal.vue'
 import Notice from './Notice.vue'
 import { useUserStore } from '@/stores'
 import { useBreakpoint } from '@/hooks'
@@ -106,6 +108,7 @@ const { isFullscreen, toggle } = useFullscreen()
 
 /** 组件引用 */
 const SettingDrawerRef = useTemplateRef('SettingDrawerRef')
+const EditUserPwdModalRef = useTemplateRef('EditUserPwdModalRef')
 
 /** 用户菜单配置 */
 const userMenuItems = [
@@ -129,7 +132,7 @@ const userMenuItems = [
     icon: 'icon-unlock',
     iconColor: 'primary',
     onClick: () => {
-      Message.info('修改密码')
+      EditUserPwdModalRef.value?.open()
     }
   }
 ]
