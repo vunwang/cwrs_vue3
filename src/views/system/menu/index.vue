@@ -2,13 +2,13 @@
   <a-card title="菜单管理" class="gi_page_card">
     <a-row justify="space-between">
       <a-space wrap>
-        <a-button type="primary" v-hasPerm="['sys:menu:add']" @click="onAdd">
+        <a-button status="success" v-hasPerm="['sys:menu:add']" @click="onAdd">
           <template #icon>
             <icon-plus/>
           </template>
           <span>新增</span>
         </a-button>
-        <a-button status="success" v-hasPerm="['sys:menu:edit']" @click="onMulEdit">
+        <a-button type="primary" v-hasPerm="['sys:menu:edit']" @click="onMulEdit">
           <template #icon>
             <icon-edit/>
           </template>
@@ -44,7 +44,7 @@
 
       <a-space wrap>
         <a-input-group>
-          <CwrsSelect v-model="form.status" :options="sysStatus" :width="120" placeholder="状态" allow-clear />
+          <CwrsSelect v-model="form.status" :options="sysStatus" :width="120" placeholder="状态" allow-clear/>
           <a-input v-model="form.title" placeholder="输入菜单名称搜索" allow-clear style="width: 250px">
             <template #prefix>
               <icon-search/>
@@ -87,58 +87,83 @@
         <a-table-column title="排序" :width="80" align="center">
           <template #cell="{ record }">{{ record.sort || 0 }}</template>
         </a-table-column>
-        <a-table-column title="路由路径" data-index="path"></a-table-column>
-        <a-table-column title="路由名称">
-          <template #cell="{ record }">{{ transformPathToName(record.path) }}</template>
+        <a-table-column title="路由路径" data-index="path">
+          <template #cell="{ record }">{{ record.path || '-' }}</template>
         </a-table-column>
-        <a-table-column title="组件路径" data-index="component"></a-table-column>
-        <a-table-column title="权限标识" data-index="permission" :width="150"></a-table-column>
+        <a-table-column title="路由名称">
+          <template #cell="{ record }">{{ transformPathToName(record.path) || '-' }}</template>
+        </a-table-column>
+        <a-table-column title="组件路径" data-index="component">
+          <template #cell="{ record }">{{ record.component || '-' }}</template>
+        </a-table-column>
+        <a-table-column title="权限标识" data-index="permission" :width="150">
+          <template #cell="{ record }">{{ record.permission || '-' }}</template>
+        </a-table-column>
         <a-table-column title="菜单图标" data-index="icon" :width="100" align="center">
           <template #cell="{ record }">
             <CwrsSvgIcon v-if="record.svgIcon" :size="24" :name="record.svgIcon"></CwrsSvgIcon>
-            <template v-else>
+            <template v-else-if="record.icon">
               <component :is="record.icon" v-if="record.icon" :size="24"></component>
             </template>
+            <span v-else>-</span>
           </template>
         </a-table-column>
         <a-table-column title="状态" :width="80" align="center">
           <template #cell="{ record }">
-            <a-popconfirm type="warning" content="确定切换该菜单状态吗?" @ok="statusOk(record)" @cancel="statusCancel">
+            <a-popconfirm type="warning" content="确定切换该菜单状态吗?" @ok="menuEdit(record,'status')"
+                          @cancel="search">
               <CwrsSwitch v-model="record.status" :disabled="!hasPerm('sys:menu:status')" size="small"/>
             </a-popconfirm>
           </template>
         </a-table-column>
         <a-table-column title="是否缓存" :width="100" align="center">
           <template #cell="{ record }">
-            <a-tag v-if="record.keepAlive" size="small" color="green">是</a-tag>
-            <a-tag v-else size="small" color="red">否</a-tag>
+            <span v-if="record.type !== '3'">
+              <a-popconfirm type="warning" content="确定切换该菜单缓存状态吗?"
+                            @ok="menuEdit(record,'keepAlive')" @cancel="search">
+                <a-switch v-if="record.type !== '3'" v-model="record.keepAlive" type="round" :checked-value="true"
+                          :unchecked-value="false"
+                          checked-text="是" unchecked-text="否" :disabled="!hasPerm('sys:menu:keepAlive')" size="small"/>
+              </a-popconfirm>
+            </span>
+            <span v-else>-</span>
           </template>
         </a-table-column>
         <a-table-column title="是否隐藏" :width="100" align="center">
           <template #cell="{ record }">
-            <a-tag v-if="record.hidden" size="small" color="green">是</a-tag>
-            <a-tag v-else size="small" color="red">否</a-tag>
+            <span v-if="record.type !== '3'">
+              <a-popconfirm type="warning" content="确定切换该菜单隐藏状态吗?"
+                            @ok="menuEdit(record,'hidden')" @cancel="search">
+                <a-switch v-model="record.hidden" type="round" :checked-value="true"
+                          :unchecked-value="false"
+                          checked-text="是" unchecked-text="否" :disabled="!hasPerm('sys:menu:hidden')" size="small"/>
+              </a-popconfirm>
+            </span>
+            <span v-else>-</span>
           </template>
         </a-table-column>
         <a-table-column title="是否外链" :width="100" align="center">
           <template #cell="{ record }">
-            <a-tag v-if="isExternal(record.path)" size="small" color="green">是</a-tag>
-            <a-tag v-else size="small" color="red">否</a-tag>
+            <span v-if="record.type !== '3'">
+              <a-tag v-if="isExternal(record.path)" size="small" color="green">是</a-tag>
+              <a-tag v-else size="small" color="red">否</a-tag>
+            </span>
+            <span v-else>-</span>
           </template>
         </a-table-column>
-        <a-table-column title="操作" :width="200" align="center" :fixed="fixed">
+        <a-table-column title="操作" :width="200" align="left" :fixed="fixed">
           <template #cell="{ record }">
             <a-space>
+              <a-button v-if="['1', '2'].includes(record.type)" type="primary" status="success" size="mini" v-hasPerm="['sys:menu:add']" @click="onAdd(record)">
+                <template #icon>
+                  <icon-plus/>
+                </template>
+              </a-button>
               <a-button type="primary" v-hasPerm="['sys:menu:edit']" size="mini" @click="onEdit(record)">
                 <template #icon>
                   <icon-edit/>
                 </template>
                 <span>编辑</span>
-              </a-button>
-              <a-button v-if="[1, 2].includes(record.type)" type="primary" status="success" size="mini">
-                <template #icon>
-                  <icon-plus/>
-                </template>
               </a-button>
               <a-popconfirm type="warning" content="确定删除该菜单吗?" @ok="onDelete(record)">
                 <a-button status="danger" v-hasPerm="['sys:menu:del']" size="mini">
@@ -253,24 +278,26 @@ const reset = () => {
   search()
 }
 
-const onAdd = () => {
-  AddMenuModalRef.value?.add()
+const onAdd = (item: any) => {
+  AddMenuModalRef.value?.add(item.menuId, item.type)
 }
 
 const onEdit = (item: any) => {
   AddMenuModalRef.value?.edit(item.menuId)
 }
 
-const statusOk = async (record: any) => {
-  const res = await editMenuStatus({menuId: record.menuId, status: record.status})
+const menuEdit = async (record: any, type: string) => {
+  const res = await editMenuStatus({
+    menuId: record.menuId,
+    type: type,
+    status: record.status,
+    hidden: record.hidden,
+    keepAlive: record.keepAlive
+  })
   if (res) {
     Message.success(res.msg)
     search()
   }
-}
-
-const statusCancel = () => {
-  search()
 }
 
 const onViewCode = () => {

@@ -53,7 +53,11 @@
           <template #cell="cell">{{ cell.rowIndex + 1 }}</template>
         </a-table-column>
         <a-table-column title="字典名称" data-index="dictName"></a-table-column>
-        <a-table-column title="字典编码" data-index="dictCode"></a-table-column>
+        <a-table-column title="字典编码" data-index="dictCode">
+          <template #cell="{ record }">
+            <a-link @click="onViewDictData(record)">{{ record.dictCode }}</a-link>
+          </template>
+        </a-table-column>
         <a-table-column title="状态" :width="100" align="center" :ellipsis="true">
           <template #cell="{ record }">
             <CwrsCellTag :value="record.dictStatus" :dict="sysStatus"></CwrsCellTag>
@@ -64,15 +68,9 @@
         <a-table-column title="创建时间" data-index="createdTime" :width="180">
           <template #cell="{record}">{{ parseTime(record.createdTime) }}</template>
         </a-table-column>
-        <a-table-column title="操作" :width="280" align="center" :fixed="fixed">
+        <a-table-column title="操作" :width="200" align="center" :fixed="fixed">
           <template #cell="{ record }">
             <a-space>
-              <a-button status="success" size="mini" @click="onViewDictData(record)">
-                <template #icon>
-                  <icon-storage/>
-                </template>
-                <span>数据</span>
-              </a-button>
               <a-button type="primary" v-hasPerm="['sys:dict:edit']" size="mini" @click="onEdit(record)">
                 <template #icon>
                   <icon-edit/>

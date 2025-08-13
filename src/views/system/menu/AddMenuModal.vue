@@ -4,7 +4,10 @@
     <a-form ref="formRef" :model="form" :rules="formRules" auto-label-width>
       <a-form-item label="菜单类型" field="type">
         <a-radio-group v-model="form.type" type="button" :disabled="isEdit" @change="onChangeType">
-          <a-radio v-for="item in sysMenuType" :key="item.itemValue" :value="item.itemValue">{{ item.itemName }}</a-radio>
+          <a-radio v-for="item in sysMenuType" :key="item.itemValue" :value="item.itemValue">{{
+              item.itemName
+            }}
+          </a-radio>
         </a-radio-group>
       </a-form-item>
 
@@ -74,7 +77,7 @@
       <a-row :gutter="16">
         <a-col v-bind="col3Props">
           <a-form-item label="状态" field="status">
-            <CwrsSwitch v-model="form.status" size="medium" />
+            <CwrsSwitch v-model="form.status" size="medium"/>
           </a-form-item>
         </a-col>
         <a-col v-bind="col3Props">
@@ -137,7 +140,7 @@ const emit = defineEmits<{
   (e: 'save-success'): void
 }>()
 
-const { data: sysMenuType } = useDict({ dictCode: 'sys_menu_type' })
+const {data: sysMenuType} = useDict({dictCode: 'sys_menu_type'})
 
 const menuSelectTree = computed(() => {
   const menus = JSON.parse(JSON.stringify(props.menus))
@@ -185,7 +188,12 @@ const routeName = computed(() => transformPathToName(form.path))
 const rules: FormInstance['rules'] = {
   parentId: [{required: true, message: '请选择上级菜单'}],
   title: [{required: true, message: '请输入菜单标题'}],
-  path: [{required: true, message: '请输入路由路径', match: /^\/[a-zA-Z0-9_/-]*$/, message: '路由路径必须包含/，且只能是/、英文字母、数字、下划线、-'}],
+  path: [{
+    required: true,
+    message: '请输入路由路径',
+    match: /^\/[a-zA-Z0-9_/-]*$/,
+    message: '路由路径必须包含/，且只能是/、英文字母、数字、下划线、-'
+  }],
   component: [{required: true, message: '请输入组件路径'}],
   permission: [{required: true, message: '请输入权限标识'}]
 }
@@ -206,7 +214,13 @@ const onChangeType = () => {
   formRef.value?.clearValidate()
 }
 
-const add = () => {
+const add = (parentId: string, type: string) => {
+  form.parentId = parentId === undefined ? '' : parentId
+  if (type === '1') {
+    form.type = '2'
+  } else if (type === '2') {
+    form.type = '3'
+  }
   menuId.value = ''
   visible.value = true
 }

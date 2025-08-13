@@ -15,7 +15,8 @@
           <span>删除</span>
         </a-button>
         <!-- 确认框 -->
-        <a-modal v-model:visible="isConfirmVisible" width="300px" title="确认删除" @ok="handleDelete" @cancel="handleCancel">
+        <a-modal v-model:visible="isConfirmVisible" width="300px" title="确认删除" @ok="handleDelete"
+                 @cancel="handleCancel">
           <p>确定要删除选中的数据吗？</p>
         </a-modal>
       </a-space>
@@ -36,9 +37,27 @@
             <a-color-picker v-model="record.itemColor" size="mini" :disabled="true" showText/>
           </template>
         </a-table-column>
+        <a-table-column title="下拉菜单" :width="100" align="center">
+          <template #cell="{ record }">
+            <a-popconfirm type="warning" content="确定切换该字典项下拉菜单状态吗?" @ok="handleEdit(record,'itemSelect')" @cancel="search">
+              <a-switch
+                  v-model="record.itemSelect"
+                  type="round"
+                  checked-value="1"
+                  unchecked-value="0"
+                  checked-text="显示"
+                  unchecked-text="隐藏"
+                  :disabled="!hasPerm('sys:dictItem:itemSelect')"
+                  size="medium"
+              />
+            </a-popconfirm>
+          </template>
+        </a-table-column>
         <a-table-column title="状态" :width="100" align="center">
           <template #cell="{ record }">
-            <CwrsCellTag :value="record.itemStatus" :dict="sysStatus"></CwrsCellTag>
+            <a-popconfirm type="warning" content="确定切换该字典项状态吗?" @ok="handleEdit(record,'itemStatus')" @cancel="search">
+              <CwrsSwitch v-model="record.itemStatus" size="medium" :disabled="!hasPerm('sys:dictItem:itemStatus')"/>
+            </a-popconfirm>
           </template>
         </a-table-column>
         <a-table-column title="操作" :width="180" align="center">
@@ -71,9 +90,10 @@
 <script lang="ts" setup>
 import {Message} from '@arco-design/web-vue'
 import AddDictDataModal from './AddDictDataModal.vue'
-import {delDictItem, getDictDataList} from '@/apis/system'
+import {delDictItem, editDictItem, getDictDataList} from '@/apis/system'
 import {useTable} from '@/hooks'
 import {useDict} from "@/hooks/app";
+import {hasPerm} from "@/utils/has";
 
 const visible = ref(false)
 const AddDictDataModalRef = useTemplateRef('AddDictDataModalRef')
@@ -119,7 +139,7 @@ const handleCancel = () => {
   isConfirmVisible.value = false;
 };
 
-const onDelete = async (item: DictDataItem) => {
+const onDelete = async (item: any) => {
   const res = await delDictItem({dictItemIds: item.dictItemId})
   if (res) {
     Message.success(res.msg)
@@ -133,6 +153,19 @@ const onAdd = () => {
 
 const onEdit = (item: DictDataItem) => {
   AddDictDataModalRef.value?.edit(item.dictItemId)
+}
+
+const handleEdit = async (item: any,type: string) => {
+  let res
+  if (type === 'itemSelect') {
+    res = await editDictItem({dictItemId: item.dictItemId, itemSelect: item.itemSelect})
+  } else if (type === 'itemStatus') {
+    res = await editDictItem({dictItemId: item.dictItemId, itemStatus: item.itemStatus})
+  }
+  if (res) {
+    Message.success(res.msg)
+    search()
+  }
 }
 
 defineExpose({open})

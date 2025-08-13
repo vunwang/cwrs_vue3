@@ -14,15 +14,39 @@
           <a-textarea v-model.trim="form.desc" placeholder="请填写描述" :max-length="200" show-word-limit
                       :auto-size="{ minRows: 3, maxRows: 5 }"/>
         </a-form-item>
-        <a-form-item label="排序" field="itemSort">
-          <a-input-number v-model="form.itemSort" placeholder="请输入排序" :min="1" mode="button" style="width: 120px"/>
-        </a-form-item>
-        <a-form-item label="颜色" field="itemColor">
-          <a-color-picker v-model="form.itemColor" defaultValue="#F1590E" showText disabledAlpha showPreset/>
-        </a-form-item>
-        <a-form-item label="状态" field="itemStatus">
-          <CwrsSwitch v-model="form.itemStatus" size="medium"/>
-        </a-form-item>
+        <a-row :gutter="16">
+          <a-col v-bind="col2Props">
+            <a-form-item label="排序" field="itemSort">
+              <a-input-number v-model="form.itemSort" placeholder="请输入排序" :min="1" mode="button"
+                              style="width: 120px"/>
+            </a-form-item>
+          </a-col>
+          <a-col v-bind="col2Props">
+            <a-form-item label="状态" field="itemStatus">
+              <CwrsSwitch v-model="form.itemStatus" size="medium"/>
+            </a-form-item>
+          </a-col>
+        </a-row>
+        <a-row :gutter="16">
+          <a-col v-bind="col2Props">
+            <a-form-item label="颜色" field="itemColor">
+              <a-color-picker v-model="form.itemColor" defaultValue="#F1590E" showText disabledAlpha showPreset/>
+            </a-form-item>
+          </a-col>
+          <a-col v-bind="col2Props">
+            <a-form-item label="下拉菜单" field="itemStatus">
+              <a-switch
+                  v-model="form.itemSelect"
+                  type="round"
+                  checked-value="1"
+                  unchecked-value="0"
+                  checked-text="显示"
+                  unchecked-text="隐藏"
+                  size="medium"
+              />
+            </a-form-item>
+          </a-col>
+        </a-row>
       </a-form>
     </a-spin>
   </a-modal>
@@ -30,7 +54,7 @@
 
 <script setup lang="ts">
 import _ from 'lodash';
-import {type FormInstance, Message} from '@arco-design/web-vue'
+import {type ColProps, type FormInstance, Message} from '@arco-design/web-vue'
 import {getDictItemDetail, addDictItem, editDictItem} from '@/apis/system'
 import {useResetReactive} from '@/hooks'
 import * as Regexp from "@/utils/regexp";
@@ -40,6 +64,7 @@ const emit = defineEmits<{
   (e: 'save-success'): void
 }>()
 
+const col2Props: ColProps = {xs: 24, sm: 24, md: 12, lg: 12, xl: 12, xxl: 12}
 const formRef = useTemplateRef('formRef')
 const dictItemId = ref('')
 const isEdit = computed(() => !!dictItemId.value)
@@ -54,6 +79,7 @@ const [form, resetForm] = useResetReactive({
   itemValue: '',
   itemColor: '#F1590E',
   itemStatus: '1',
+  itemSelect: '1',
   itemSort: 1,
   desc: ''
 })
@@ -66,7 +92,8 @@ const rules: FormInstance['rules'] = {
   ],
   itemSort: [{required: true, message: '请输入排序'}],
   itemColor: [{required: true}],
-  itemStatus: [{required: true}]
+  itemStatus: [{required: true}],
+  itemSelect: [{required: true}]
 }
 
 const add = (dictCode: string) => {

@@ -24,10 +24,19 @@ const {data: sysStatus} = useDict({dictCode: 'sys_status'})
 
 const visible = ref(false)
 const postId = ref('')
-const post = ref({})
+const post = ref({
+  deptName: '',
+  postName: '',
+  postCode: '',
+  postStatus: '',
+  postSort: '',
+  createdUserName: '',
+  createdTime: '',
+  desc: '',
+})
 const getDetail = async () => {
   const res = await getPostDetail({ postId: postId.value })
-  post.value = res.data
+  Object.assign(post.value, res.data)
 }
 
 const open = async (id: string) => {
