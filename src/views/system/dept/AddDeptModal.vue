@@ -1,44 +1,77 @@
 <template>
-  <a-modal v-model:visible="visible" :title="title" width="90%" :modal-style="{ maxWidth: '520px' }"
-    :mask-closable="true" @before-ok="save" @close="close">
-    <a-form ref="formRef" :model="form" :rules="rules" size="medium" auto-label-width>
-      <a-form-item label="上级组织" field="parentId">
-        <a-tree-select v-model="form.parentId" allow-clear :data="deptList" placeholder="请选择上级组织" :field-names="{
-          key: 'deptId',
-          title: 'deptName',
-          children: 'children',
-        }"></a-tree-select>
-      </a-form-item>
-      <a-form-item label="组织名称" field="deptName">
-        <a-input v-model.trim="form.deptName" placeholder="请输入组织名称" allow-clear :max-length="20"></a-input>
-      </a-form-item>
-      <a-form-item label="排序" field="deptSort">
-        <a-input-number v-model="form.deptSort" placeholder="请输入组织排序" :min="1" mode="button" style="width: 120px"/>
-      </a-form-item>
-      <a-form-item label="状态" field="deptStatus">
-        <CwrsSwitch v-model="form.deptStatus" size="medium"/>
-      </a-form-item>
-    </a-form>
-  </a-modal>
+  <el-dialog
+      v-model="visible"
+      :title="title"
+      width="90%"
+      :style="{ maxWidth: '520px' }"
+      @close="close"
+  >
+    <template #header>
+      <div class="dialog-header">
+        <span class="dialog-header-title">{{ title }}</span>
+      </div>
+    </template>
+    <el-form
+        ref="formRef"
+        :model="form"
+        :rules="rules"
+        label-position="left"
+        label-width="auto"
+        size="default"
+    >
+      <el-form-item label="上级组织" prop="parentId">
+        <DeptTreeSelect
+            v-model="form.parentId"
+            placeholder="请选择上级组织"
+        />
+      </el-form-item>
+
+      <el-form-item label="组织名称" prop="deptName">
+        <el-input
+            v-model.trim="form.deptName"
+            placeholder="请输入组织名称"
+            clearable
+            :maxlength="20"
+        />
+      </el-form-item>
+
+      <el-form-item label="排序" prop="deptSort">
+        <el-input-number
+            v-model="form.deptSort"
+            placeholder="请输入组织排序"
+            :min="1"
+            controls-position="right"
+            style="width: 120px"
+        />
+      </el-form-item>
+
+      <el-form-item label="状态" prop="deptStatus">
+        <CwrsSwitch v-model="form.deptStatus" size="default"/>
+      </el-form-item>
+    </el-form>
+
+    <template #footer>
+      <el-button @click="close">取消</el-button>
+      <el-button type="primary" @click="save">确定</el-button>
+    </template>
+  </el-dialog>
 </template>
 
 <script setup lang="ts">
-import { type FormInstance, Message } from '@arco-design/web-vue'
-import { useResetReactive } from '@/hooks'
-import { useDept } from '@/hooks/app'
-import { getDeptDetail, editDept, addDept } from '@/apis/system'
+import {ref, computed, nextTick} from 'vue'
+import {ElMessage} from 'element-plus'
+import {useResetReactive} from '@/hooks'
+import {getDeptDetail, editDept, addDept} from '@/apis/system'
 
 const emit = defineEmits<{
   (e: 'save-success'): void
 }>()
 
-const formRef = useTemplateRef('formRef')
+const formRef = ref()
 const deptId = ref('')
 const visible = ref(false)
 const isEdit = computed(() => !!deptId.value)
 const title = computed(() => (isEdit.value ? '编辑组织' : '新增组织'))
-
-const { deptList, getDeptList } = useDept()
 
 const [form, resetForm] = useResetReactive({
   deptId: '',
@@ -48,51 +81,59 @@ const [form, resetForm] = useResetReactive({
   deptStatus: '1',
 })
 
-const rules: FormInstance['rules'] = {
+const rules = {
   deptName: [
-    { required: true, message: '请输入组织名称' },
-    { min: 3, max: 20, message: '长度在 3 - 20个字符' }
-  ]
+    {required: true, message: '请输入组织名称', trigger: 'blur'},
+    {min: 3, max: 20, message: '长度在 3 - 20 个字符', trigger: 'blur'},
+  ],
 }
 
 const add = async (id: string) => {
-  await getDeptList()
   deptId.value = ''
   form.parentId = id
   visible.value = true
 }
 
 const edit = async (id: string) => {
-  await getDeptList()
-  deptId.value = id
-  visible.value = true
-  const res = await getDeptDetail({ deptId: id })
-  Object.assign(form, res.data)
-  if (form.parentId === '0') {
-    form.parentId = ''
+  try {
+    deptId.value = id
+    visible.value = true
+    // 等待弹窗打开后再赋值（避免 formRef 未挂载）
+    nextTick(async () => {
+      const res = await getDeptDetail({deptId: id})
+      Object.assign(form, res.data)
+      if (form.parentId === '0') {
+        form.parentId = ''
+      }
+    })
+  } catch (error) {
+    return false
   }
 }
 
 const close = () => {
   formRef.value?.resetFields()
   resetForm()
+  visible.value = false
 }
 
 const save = async () => {
   try {
-    const valid = await formRef.value?.validate()
-    if (valid) return false
-    form.parentId = form.parentId || '0'
-    const res = isEdit.value ? await editDept(form) : await addDept(form)
+    await formRef.value?.validate()
+    const submitData = {
+      ...form,
+      parentId: form.parentId || '0',
+    }
+    const res = isEdit.value ? await editDept(submitData) : await addDept(submitData)
     if (res) {
-      Message.success(res.msg)
+      ElMessage.success(res.msg)
       emit('save-success')
-      return true
+      close()
     }
   } catch (error) {
     return false
   }
 }
 
-defineExpose({ add, edit })
+defineExpose({add, edit})
 </script>

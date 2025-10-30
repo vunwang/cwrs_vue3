@@ -70,18 +70,41 @@ const storeSetup = () => {
    * 切换主题模式（暗黑/明亮）
    * @param dark - 是否切换为暗黑模式
    */
-  const toggleTheme = (dark: boolean) => {
-    settingConfig.theme = dark ? THEME_CONSTANTS.DARK : THEME_CONSTANTS.LIGHT
+  // arco-theme=dark
+  // const toggleTheme = (dark: boolean) => {
+  //   settingConfig.theme = dark ? THEME_CONSTANTS.DARK : THEME_CONSTANTS.LIGHT
 
-    if (dark) {
-      document.body.setAttribute(THEME_CONSTANTS.ATTRIBUTE, THEME_CONSTANTS.DARK)
-    } else {
-      document.body.removeAttribute(THEME_CONSTANTS.ATTRIBUTE)
-    }
+  //   if (dark) {
+  //     document.body.setAttribute(THEME_CONSTANTS.ATTRIBUTE, THEME_CONSTANTS.DARK)
+  //   } else {
+  //     document.body.removeAttribute(THEME_CONSTANTS.ATTRIBUTE)
+  //   }
 
-    setThemeColor(settingConfig.themeColor)
+  //   setThemeColor(settingConfig.themeColor)
+  // }
+const toggleTheme = (dark: boolean) => {
+  settingConfig.theme = dark ? THEME_CONSTANTS.DARK : THEME_CONSTANTS.LIGHT;
+
+  // 1. 操作根元素（html）的class，Element通常基于此识别暗色模式
+  const root = document.documentElement; // 获取<html>标签
+  if (dark) {
+     document.body.setAttribute(THEME_CONSTANTS.ATTRIBUTE, THEME_CONSTANTS.DARK)
+    root.classList.add('dark'); // 添加dark类名启用暗色模式
+    // root.setAttribute(THEME_CONSTANTS.ATTRIBUTE, THEME_CONSTANTS.DARK);
+    // 可选：如果Element需要特定属性（如data-theme），可补充
+    // root.setAttribute('data-theme', 'dark');
+  } else {
+    root.classList.remove('dark'); // 移除dark类名禁用暗色模式
+     document.body.removeAttribute(THEME_CONSTANTS.ATTRIBUTE)
+    // root.removeAttribute(THEME_CONSTANTS.ATTRIBUTE);
+    // root.removeAttribute('data-theme');
   }
 
+  // 2. 如果使用了ElConfigProvider，需要同步更新主题配置
+  // 假设你在全局维护了theme变量，可在此处更新（需结合你的状态管理方式）
+  // updateGlobalTheme(settingConfig.theme);
+  setThemeColor(settingConfig.themeColor);
+};
   /**
    * 初始化主题设置
    * 在应用启动时设置初始主题色

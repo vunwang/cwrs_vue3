@@ -1,11 +1,24 @@
 <template>
-  <a-select v-model="localValue" :style="{ width: width + 'px' }" :placeholder="placeholder" allow-clear :allow-search="allowSearch">
-    <a-option v-for="item of options" :value="item.itemValue" :label="item.itemName" :disabled="item.itemStatus == '0'"/>
-  </a-select>
+  <el-select
+      v-model="localValue"
+      :style="{ width: width + 'px' }"
+      :placeholder="placeholder"
+      clearable
+      :filterable="allowSearch"
+      :popper-append-to-body="false"
+  >
+    <el-option
+        v-for="item in options"
+        :key="item.itemValue"
+        :value="item.itemValue"
+        :label="item.itemName"
+        :disabled="item.itemStatus === '0'"
+    />
+  </el-select>
 </template>
 
 <script lang="ts" setup>
-import {defineProps, defineEmits, computed} from 'vue'
+import { defineProps, defineEmits, computed } from 'vue'
 
 const props = defineProps<{
   modelValue: string

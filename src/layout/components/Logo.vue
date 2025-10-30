@@ -4,14 +4,18 @@
 -->
 <template>
   <section class="system-logo" :class="{ collapsed: props.collapsed }" @click="handleHomeNavigation">
-    <img class="logo" src="@/assets/images/logo.png" />
-    <span class="system-name gi-line-1">Admin Vue</span>
+    <img class="logo" :src="userStore.sysLogo" />
+    <span class="system-name gi-line-1" style="font-size: 15px">{{ userStore.sysTitle }}</span>
   </section>
 </template>
 
-<script setup lang="ts">
-/** 组件名称 */
+<script setup lang="ts">/** 组件名称 */
+import {useAppStore, useUserStore} from "@/stores";
+
 defineOptions({ name: 'Logo' })
+
+const appStore = useAppStore()
+const userStore = useUserStore()
 
 /** Props 默认值 */
 const props = withDefaults(defineProps<Props>(), {

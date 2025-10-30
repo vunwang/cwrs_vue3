@@ -72,12 +72,13 @@ export function useTable<T extends U, U = T>(api: Api<T>, options?: Options<T, U
             loading.value = true
             const res = await api({pageNum: pagination.current, pageSize: pagination.pageSize})
             // 处理返回的数据结构可能是分页或数组的情况
-            const data = !Array.isArray(res.data) ? res.data.records : res.data
-            tableData.value = formatResult ? formatResult(data) : data
+            tableData.value = res.data
             // 设置总数据量
-            const total = !Array.isArray(res.data) ? res.data.total : data.length
-            setTotal(total)
+            setTotal(res.total)
             onSuccess?.()
+        } catch (error) {
+            loading.value = false
+            return false
         } finally {
             loading.value = false
         }

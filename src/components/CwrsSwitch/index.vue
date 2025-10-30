@@ -1,18 +1,19 @@
 <template>
-  <a-switch
+  <el-switch
       v-model="localValue"
-      type="round"
-      :checked-value="checkedValue"
-      :unchecked-value="uncheckedValue"
-      :checked-text="checkedText"
-      :unchecked-text="uncheckedText"
+      :active-value="checkedValue"
+      :inactive-value="uncheckedValue"
+      :active-text="checkedText"
+      :inactive-text="uncheckedText"
       :size="size"
+      inline-prompt
   />
 </template>
 
 <script lang="ts" setup>
 import { defineProps, defineEmits, computed } from 'vue'
 import {useDict} from "@/hooks/app";
+import {hasPerm} from "@/utils/has";
 const { data: sysStatus } = useDict({ dictCode: 'sys_status' })
 
 const props = defineProps<{

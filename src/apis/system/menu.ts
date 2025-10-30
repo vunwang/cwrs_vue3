@@ -60,3 +60,42 @@ export function editMenu(params: any) {
 export function editButton(params: any) {
     return http.put('/sysMenu/editButton', params)
 }
+
+// app********************************************
+/** 获取app菜单数据 */
+export function getMenuAppList(params: any) {
+    return http.get('/sysMenu/getMenuAppTreeList', params)
+}
+/** 删除app菜单 */
+// export function delMenu(params: any) {
+//     return http.del('/sysMenu/del', params)
+// }
+/** 新增app目录 */
+export function addAppDirectory(params: any) {
+    return http.post('/sysMenu/addAppDirectory', params)
+}
+
+/** 新增app菜单 */
+export function addAppMenu(params: any) {
+    return http.post('/sysMenu/addAppMenu', params)
+}
+
+/** 新增app按钮 */
+export function addAppButton(params: any) {
+    return http.post('/sysMenu/addAppButton', params)
+}
+
+/** 更新app目录 */
+export function editAppDirectory(params: any) {
+    return http.put('/sysMenu/editAppDirectory', params)
+}
+
+/** 更新app菜单 */
+export function editAppMenu(params: any) {
+    return http.put('/sysMenu/editAppMenu', params)
+}
+
+/** 更新app按钮 */
+export function editAppButton(params: any) {
+    return http.put('/sysMenu/editAppButton', params)
+}

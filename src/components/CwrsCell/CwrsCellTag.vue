@@ -1,11 +1,17 @@
 <template>
-  <a-tag
+  <el-tag
       v-if="dictInfo"
-      :color="dictInfo.itemColor"
+
       size="small"
+      effect="dark"
+      :style="{
+      border: 'none',
+      backgroundColor: dictInfo.itemColor || '#409EFF',
+      color: '#ffffff'
+    }"
   >
     {{ dictInfo.itemName }}
-  </a-tag>
+  </el-tag>
 </template>
 
 <script lang="ts" setup>
@@ -30,4 +36,8 @@ const dictInfo = computed(() => {
 });
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+:deep(.el-tag) {
+  border: none !important;
+}
+</style>

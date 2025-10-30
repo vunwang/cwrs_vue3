@@ -49,7 +49,7 @@
           <!-- 管理员头像 -->
           <a-avatar :size="32">
             <img v-if ="userStore.avatar" :src="userStore.avatar" />
-            <img v-else src="@/assets/images/logo.png" />
+            <img v-else :src="userStore.sysLogo" />
           </a-avatar>
           <span class="username">{{ userStore.nickName }}</span>
           <icon-down />
@@ -152,6 +152,7 @@ const handleLogout = () => {
     onBeforeOk: async () => {
       try {
         await userStore.logout()
+        userStore.resetToken()
         router.replace('/login')
         return true
       } catch (error) {

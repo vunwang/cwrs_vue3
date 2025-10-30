@@ -6,8 +6,9 @@ import {resetRouter} from '@/router'
 import {
     getUserIdentity as getUserIdentityApi,
     getUserInfo as getUserInfoApi,
+    getParamInfo as getParamInfoApi,
     login as loginApi,
-    logout as logoutApi
+    logout as logoutApi, getParamInfo
 } from '@/apis/user'
 import {clearMenuId, clearToken, getToken, setToken} from '@/utils/auth'
 
@@ -39,28 +40,41 @@ const storeSetup = () => {
         desc: '',
         deptId: '',
         roleId: '',
+        roleCode: '',
         avatar: ''
     })
+    // 参数信息
+    const paramInfo = reactive({
+        deptId: '',
+        sysLogo: '',
+        sysTitle: '',
+        mapDisplayArea: '',
+        largeScreenTitle: '',
+        contract: '',
+        insurance: '',
+        annualInspection: ''
+    })
+    const sysLogo = computed(() => paramInfo.sysLogo)
+    const sysTitle = computed(() => paramInfo.sysTitle)
+    const mapDisplayArea = computed(() => paramInfo.mapDisplayArea)
+    const largeScreenTitle = computed(() => paramInfo.largeScreenTitle)
+    const contract = computed(() => paramInfo.contract)
+    const insurance = computed(() => paramInfo.insurance)
+    const annualInspection = computed(() => paramInfo.annualInspection)
 
     /** 用户昵称 */
     const nickName = computed(() => userInfo.nickName)
-
     /** 用户角色列表 */
     const roleId = computed(() => userInfo.roleId)
-
+    const roleCode = computed(() => userInfo.roleCode)
     /** 用户所在部门 */
     const deptId = computed(() => userInfo.deptId)
-
     /** 用户头像 */
     const avatar = computed(() => userInfo.avatar)
-
     /** 用户令牌 */
     const token = ref<string>(getToken() || '')
-
-
     /** 用户权限列表 */
     const permissions = ref<string[]>([])
-
     /** 用户身份信息 */
     const identityOptions = ref<any[]>([])
 
@@ -70,7 +84,6 @@ const storeSetup = () => {
         clearToken()
         clearMenuId()
     }
-
     /**
      * 用户登录
      * @description 处理用户登录请求并保存令牌
@@ -147,6 +160,7 @@ const storeSetup = () => {
                 desc,
                 deptId,
                 roleId,
+                roleCode,
                 avatar,
                 permissions: userPermissions
             } = res.data
@@ -157,6 +171,7 @@ const storeSetup = () => {
             userInfo.userPhone = userPhone
             userInfo.nickName = nickName
             userInfo.roleId = roleId
+            userInfo.roleCode = roleCode
             userInfo.deptId = deptId
             userInfo.avatar = avatar
             userInfo.signature = signature
@@ -170,6 +185,39 @@ const storeSetup = () => {
             if (roleId) {
                 permissions.value = userPermissions || []
             }
+            return true
+        } catch (error) {
+            console.error('获取用户信息失败:', error)
+            throw error
+        }
+    }
+
+    /**
+     * 获取用户对应组织的配置信息
+     */
+    const getParamInfo = async (): Promise<void> => {
+        try {
+            const res = await getParamInfoApi()
+            const {
+                deptId,
+                sysLogo,
+                sysTitle,
+                mapDisplayArea,
+                largeScreenTitle,
+                contract,
+                insurance,
+                annualInspection
+            } = res.data
+
+            // 更新用户基本信息
+            paramInfo.deptId = deptId
+            paramInfo.sysLogo = sysLogo
+            paramInfo.sysTitle = sysTitle
+            paramInfo.mapDisplayArea = mapDisplayArea
+            paramInfo.largeScreenTitle = largeScreenTitle
+            paramInfo.contract = contract
+            paramInfo.insurance = insurance
+            paramInfo.annualInspection = annualInspection
             return true
         } catch (error) {
             console.error('获取用户信息失败:', error)
@@ -193,12 +241,22 @@ const storeSetup = () => {
         avatar,
         token,
         roleId,
+        roleCode,
         deptId,
         permissions,
         identityOptions,
+        paramInfo,
+        sysLogo,
+        sysTitle,
+        mapDisplayArea,
+        largeScreenTitle,
+        contract,
+        insurance,
+        annualInspection,
         login,
         logout,
         getInfo,
+        getParamInfo,
         getUserIdentity,
         resetToken,
         editToken

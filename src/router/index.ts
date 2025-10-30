@@ -43,7 +43,6 @@ const homeRoute: RouteRecordRaw = {
       component: () => import('@/views/home/index.vue'),
       name: 'HomeIndex',
       meta: {
-        menuId: 'home',
         title: '首页',
         icon: 'icon-dashboard',
         svgIcon: 'menu-home',

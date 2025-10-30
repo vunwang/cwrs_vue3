@@ -7,7 +7,7 @@
       :class="`animated-fade-up-${index}`" style="overflow: hidden">
       <template #avatar>
         <a-avatar>
-          <img src="@/assets/images/logo.png" />
+          <img :src="userStore.sysLogo" />
         </a-avatar>
       </template>
       <template #content>
@@ -23,6 +23,9 @@
 </template>
 
 <script setup lang="ts">
+import { useUserStore } from '@/stores'
+
+const userStore = useUserStore()
 const list = [
   { type: 1, name: '管理员', content: '内容最新优惠活动', datetime: '5分钟前' },
   { type: 2, name: '管理员', content: '新增内容尚未通过审核，详情请点击查看', datetime: '半小时前' },

@@ -77,35 +77,37 @@
       <a-row :gutter="16">
         <a-col v-bind="col3Props">
           <a-form-item label="状态" field="status">
-            <CwrsSwitch v-model="form.status" size="medium"/>
+            <a-switch v-model="form.status" checked-value="1" unchecked-value="0"
+                      checked-text="正常"
+                      unchecked-text="禁用"/>
           </a-form-item>
         </a-col>
         <a-col v-bind="col3Props">
           <a-form-item v-if="['1', '2'].includes(form.type)" label="是否隐藏" field="hidden">
-            <a-switch v-model="form.hidden" type="round" :checked-value="true" :unchecked-value="false"
+            <a-switch v-model="form.hidden" :checked-value="true" :unchecked-value="false"
                       checked-text="是"
                       unchecked-text="否"/>
           </a-form-item>
         </a-col>
         <a-col v-bind="col3Props">
           <a-form-item v-if="['1', '2'].includes(form.type)" label="是否缓存" field="keepAlive">
-            <a-switch v-model="form.keepAlive" type="round" :checked-value="true" :unchecked-value="false"
+            <a-switch v-model="form.keepAlive" :checked-value="true" :unchecked-value="false"
                       checked-text="是" unchecked-text="否"/>
           </a-form-item>
         </a-col>
         <a-col v-bind="col3Props">
           <a-form-item v-if="['1', '2'].includes(form.type)" label="面包屑" field="breadcrumb">
-            <a-switch v-model="form.breadcrumb" type="round" :checked-value="true" :unchecked-value="false"
+            <a-switch v-model="form.breadcrumb" :checked-value="true" :unchecked-value="false"
                       checked-text="显示" unchecked-text="隐藏"/>
           </a-form-item>
         </a-col>
         <a-col v-bind="col3Props">
           <a-form-item v-if="form.type === '1'" label="总是显示" field="alwaysShow">
-            <a-switch v-model="form.alwaysShow" type="round" :checked-value="true" :unchecked-value="false"
+            <a-switch v-model="form.alwaysShow" :checked-value="true" :unchecked-value="false"
                       checked-text="显示" unchecked-text="隐藏"/>
           </a-form-item>
           <a-form-item v-if="form.type === '2'" label="页签显示" field="showInTabs">
-            <a-switch v-model="form.showInTabs" type="round" :checked-value="true" :unchecked-value="false"
+            <a-switch v-model="form.showInTabs" :checked-value="true" :unchecked-value="false"
                       checked-text="显示" unchecked-text="隐藏"/>
           </a-form-item>
         </a-col>
@@ -226,15 +228,19 @@ const add = (parentId: string, type: string) => {
 }
 
 const edit = async (id: string) => {
-  visible.value = true
-  menuId.value = id
-  const res = await getMenuDetail({menuId: id})
-  Object.assign(form, res.data)
-  if (form.parentId === '0') {
-    form.parentId = ''
-  }
-  if (isExternal(form.path)) {
-    isExternalUrl.value = true
+  try {
+    visible.value = true
+    menuId.value = id
+    const res = await getMenuDetail({menuId: id})
+    Object.assign(form, res.data)
+    if (form.parentId === '0') {
+      form.parentId = ''
+    }
+    if (isExternal(form.path)) {
+      isExternalUrl.value = true
+    }
+  } catch (error) {
+    return false
   }
 }
 

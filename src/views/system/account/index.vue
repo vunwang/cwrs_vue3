@@ -1,127 +1,278 @@
 <template>
-  <div class="gi_page account">
-    <a-row :gutter="14">
-      <a-col :xs="24" :sm="24" :md="24" :lg="10" :xl="8" :xxl="7">
-        <section class="user-card">
+  <el-card class="gi_page_card" style="padding: 30px 200px">
+    <div style="width: 100%">
+      <el-row :gutter="20">
+        <el-col :span="8">
           <div class="user-card__header">
-            <a-avatar :size="60" :trigger-icon-style="{ color: '#3491FA' }">
-              <img v-if ="userStore.avatar" :src="userStore.avatar" />
-              <img v-else src="@/assets/images/logo.png" />
-              <template #trigger-icon>
-                <IconCamera />
-              </template>
-            </a-avatar>
-            <div class="name">{{ userStore.nickName }}</div>
-            <p class="desc">{{ userStore.signature }}</p>
+            <div class="avatar-container">
+              <img
+                v-if="userStore.userInfo.avatar"
+                :src="userStore.userInfo.avatar"
+                style="
+                  width: 200px;
+                  height: 200px;
+                  border-radius: 50%;
+                  position: relative;
+                  z-index: 2;
+                "
+              />
+              <img
+                v-else
+                :src="userStore.sysLogo"
+                style="
+                  width: 200px;
+                  height: 200px;
+                  border-radius: 50%;
+                  position: relative;
+                  z-index: 2;
+                "
+              />
+            </div>
           </div>
-
-          <ul class="user-card__list">
-            <li class="list-item">
-              <span class="icon"><icon-user :stroke-width="1" :size="16" /></span>
-              <span>{{ userStore.userName }}</span>
-            </li>
-            <li class="list-item">
-              <span class="icon"><icon-phone :stroke-width="1"
-                  :size="16" /></span><span>{{ userStore.userPhone }}</span>
-            </li>
-            <li class="list-item">
-              <span class="icon"><icon-email :stroke-width="1" :size="16" /></span><span>{{ userStore.email || '-' }}</span>
-            </li>
-          </ul>
-          <a-divider type="dashed" />
-
-          <a-typography-title :heading="6">标签</a-typography-title>
-          <a-space wrap :size="5">
-            <a-tag>vue3</a-tag>
-            <a-tag>pinia</a-tag>
-            <a-tag>vite</a-tag>
-            <a-tag>ts</a-tag>
-            <a-tag>arco design</a-tag>
-          </a-space>
-
-          <a-descriptions :column="1" style="margin-top: 20px">
-            <a-descriptions-item label="性别">
-              <CwrsCellTag :value="userStore.gender" :dict="sysGender"></CwrsCellTag>
-            </a-descriptions-item>
-            <a-descriptions-item label="状态">
-              <a-space wrap :size="5">
-                <CwrsCellTag :value="userStore.userStatus" :dict="sysStatus"></CwrsCellTag>
-              </a-space>
-            </a-descriptions-item>
-            <a-descriptions-item label="生日">{{ userStore.birth }}</a-descriptions-item>
-            <a-descriptions-item label="描述">{{ userStore.desc }}</a-descriptions-item>
-          </a-descriptions>
-        </section>
-      </a-col>
-      <a-col :xs="24" :sm="24" :md="24" :lg="14" :xl="16" :xxl="17">
-        <RightBox></RightBox>
-      </a-col>
-    </a-row>
-  </div>
+        </el-col>
+        <el-col :span="14">
+          <div
+            style="
+              height: 80px;
+              width: 100%;
+              border-radius: 50px;
+              background: rgba(236, 236, 237, 0.5);
+              display: flex;
+              margin-top: 100px;
+            "
+          >
+            <div class="imgbox" style="display: flex; align-items: center">
+              <img
+                src="@/assets/images/grzl.png"
+                style="width: 60px; height: 50px"
+              />
+            </div>
+            <div class="imgbox">
+              <img
+                src="@/assets/images/lxdh.png"
+                style="width: 60px; height: 60px"
+              />
+            </div>
+            <div class="imgbox">
+              <img
+                src="@/assets/images/lxyx.png"
+                style="width: 60px; height: 50px"
+              />
+            </div>
+            <div class="imgbox">
+              <img
+                src="@/assets/images/grsr.png"
+                style="width: 60px; height: 60px"
+              />
+            </div>
+          </div>
+        </el-col>
+      </el-row>
+      <el-divider content-position="right">
+        {{ userStore.userInfo.userName }}
+      </el-divider>
+      <el-row :gutter="20">
+        <el-col :span="8">
+          <div class="name">{{ userStore.userInfo.userName }}</div>
+          <div style="margin-top: 20px">
+            <span class="name1">性别:</span>
+            <CwrsCellTag
+              :value="userStore.userInfo.gender"
+              :dict="sysGender"
+            ></CwrsCellTag>
+          </div>
+          <div style="margin-top: 20px">
+            <span class="name1">状态:</span>
+            <el-space wrap :size="5">
+              <CwrsCellTag
+                :value="userStore.userInfo.userStatus"
+                :dict="sysStatus"
+              ></CwrsCellTag>
+            </el-space>
+          </div>
+          <div style="margin-top: 20px" class="name1">
+            <span>生日:</span>
+            {{ userStore.userInfo.birth }}
+          </div>
+        </el-col>
+        <el-col :span="8">
+          <div class="dhBox">
+            <div class="yuanquan"></div>
+            <div class="dhBoxTitle">电话</div>
+            <div class="lxdh">
+              <el-icon size="60" color="#fff">
+                <PhoneFilled />
+              </el-icon>
+              {{ userStore.userInfo.userPhone }}
+            </div>
+          </div>
+          <div style="height: 20px">
+            <!-- 占位 -->
+          </div>
+          <div class="dhBox1">
+            <div class="yuanquan"></div>
+            <div class="dhBoxTitle">邮箱</div>
+            <div class="lxdh">
+              <el-icon size="60" color="#fff">
+                <Message />
+              </el-icon>
+              {{ userStore.userInfo.email || "-" }}
+            </div>
+          </div>
+        </el-col>
+        <el-col :span="8">
+          <div
+            style="
+              box-sizing: border-box;
+              padding: 20px;
+              height: 260px;
+              border-radius: 14px;
+              background-image: linear-gradient(to bottom, #f8f9fb, #f3f5fa);
+              color: #01264c;
+              font-size: 16px;
+            "
+          >
+            <div></div>
+            <div class="dis_flex_center">
+              <div class="shuxian"></div>
+              <div class="fontStyle16">描述</div>
+            </div>
+            <div style="margin-top: 10px; height: 180px; overflow-y: auto">
+              {{ userStore.userInfo.desc }}
+            </div>
+          </div>
+        </el-col>
+      </el-row>
+    </div>
+  </el-card>
 </template>
 
 <script lang="ts" setup>
-import RightBox from './RightBox.vue'
-import { useUserStore } from '@/stores'
-import {useDict} from "@/hooks/app";
+import { useUserStore } from "@/stores";
+import { useDict } from "@/hooks/app";
 
-const {data: sysGender} = useDict({dictCode: 'sys_gender'})
-const {data: sysStatus} = useDict({dictCode: 'sys_status'})
+const { data: sysGender } = useDict({ dictCode: "sys_gender" });
+const { data: sysStatus } = useDict({ dictCode: "sys_status" });
 
-defineOptions({ name: 'SystemAccount' })
-const userStore = useUserStore().userInfo
+defineOptions({ name: "SystemAccount" });
+const userStore = useUserStore();
 </script>
 
 <style lang="scss" scoped>
-.user-card {
+::deep(.el-tag--small) {
+  height: auto !important;
+  padding: 4px 8px !important;
+}
+
+::deep(.el-tag) {
+  font-size: 16px;
+  padding: 4px 8px !important;
+}
+
+::deep(.el-divider__text) {
+  color: #01264c;
+  font-size: 20px;
+  font-weight: 900;
+}
+
+.imgbox {
+  width: 25%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.user-card__header {
+  display: flex;
+  justify-content: center;
+}
+
+.avatar-container {
+  position: relative;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+}
+
+//  外层渐变圆环
+.avatar-container::before {
+  content: "";
+  position: absolute;
+  top: -20px;
+  left: -20px;
+  right: -20px;
+  bottom: -20px;
+  border-radius: 50%;
+  border: 15px solid transparent;
+  background: linear-gradient(#fff, #fff) padding-box,
+    //linear-gradient(135deg, #0a35ee, #fff) border-box;
+    linear-gradient(135deg, #f96fb4, #a495f9, #58aafc) border-box;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.dhBox1 {
+  height: 120px;
   width: 100%;
-  height: fit-content;
-  padding: $padding;
-  box-sizing: border-box;
-  background: var(--color-bg-1);
-  border-radius: 2px;
+  background: linear-gradient(306deg, #8672ff 0%, #50aeec 100%);
+  // background-color: #3878fe;
+  border-radius: 14px;
+  color: #fff;
+  font-size: 20px;
+  font-weight: 900;
+  position: relative;
+  // box-shadow: 5px 10px 20px rgba(83, 137, 251, 0.8);
+}
 
-  &__header {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+.dhBox {
+  height: 120px;
+  width: 100%;
+  background: linear-gradient(306deg, #1c9cff 0%, #6ec9ff 100%);
+  // background-color: #29dba4;
+  border-radius: 14px;
+  color: #fff;
+  font-size: 20px;
+  font-weight: 900;
+  position: relative;
+  // box-shadow: 5px 10px 20px rgba(83, 251, 220, 0.8);
+}
 
-    .name {
-      font-size: 20px;
-      font-weight: bolder;
-      line-height: 1.5;
-      margin: 8px;
-      color: $color-text-1;
-    }
+.yuanquan {
+  position: absolute;
+  right: 20px;
+  top: 20px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background-color: #fff;
+}
 
-    .desc {
-      font-size: 12px;
-      color: $color-text-3;
-    }
-  }
+.dhBoxTitle {
+  position: absolute;
+  left: 20px;
+  top: 20px;
+  font-size: 28px;
+}
 
-  &__list {
-    margin-top: 20px;
+.lxdh {
+  font-size: 30px;
+  position: absolute;
+  bottom: 10px;
+  left: 20px;
+  display: flex;
+}
 
-    .list-item {
-      padding-bottom: 16px;
-      display: flex;
+.name1 {
+  font-size: 18px;
+  margin-right: 20px;
+  font-weight: 900;
+  color: #01264c;
+}
 
-      >.icon {
-        margin-right: 8px;
-      }
-    }
-  }
-
-  &__images {
-    margin: 10px 0;
-
-    img {
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-    }
-  }
+.name {
+  font-size: 50px;
+  text-align: center;
+  color: #01264c;
+  font-weight: 900;
 }
 </style>

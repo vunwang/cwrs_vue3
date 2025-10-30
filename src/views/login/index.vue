@@ -11,7 +11,7 @@
           <a-form ref="formRef" :size="isMobile() ? 'large' : 'medium'" :model="form" :rules="rules"
                   :style="{ width: '84%' }" :label-col-style="{ display: 'none' }" :wrapper-col-style="{ flex: 1 }">
             <h3 class="login-right__title">
-              <img class="logo" src="@/assets/images/logo.png"/><span>Admin Vue</span>
+              <span>CWRS管理系统</span>
             </h3>
             <a-form-item field="account">
               <a-input v-model="form.account" placeholder="账号" @change="getIdentity" allow-clear>
@@ -53,21 +53,20 @@
 <script setup lang="ts">
 import {type FormInstance, Message} from '@arco-design/web-vue'
 import LoginBg from './components/LoginBg/index.vue'
-import {useTabsStore, useUserStore} from '@/stores'
+import {useRouteStore, useTabsStore, useUserStore} from '@/stores'
 import {useLoading} from '@/hooks'
 import * as Regexp from '@/utils/regexp'
 import {isMobile} from '@/utils'
-import {EnNum} from "@/utils/regexp";
 
 defineOptions({name: 'Login'})
 const router = useRouter()
 const userStore = useUserStore()
 const tabsStore = useTabsStore()
+const routeStore = useRouteStore()
 
-userStore.getUserIdentity({account: "admin"})
 const form = reactive({
-  account: 'admin',
-  password: '123456',
+  account: '',
+  password: '',
   identity: '',
   deptId: '',
   roleId: '',
@@ -91,6 +90,7 @@ const errorMessage = ref('')
 
 // 点击登录
 const getIdentity = async () => {
+  if (!form.account) return
   try {
     setLoading(true)
     await userStore.getUserIdentity({account: form.account})
@@ -107,6 +107,10 @@ const login = async () => {
     if (valid) return
     setLoading(true)
 
+    if (userStore.identityOptions[0] === undefined) {
+      Message.error('用户不存在，请检查用户名或手机号是否正确！')
+      return
+    }
     let identityArr = userStore.identityOptions[0].value.split(',')
     if (form.identity) {
       identityArr = form.identity.split(',')
@@ -126,6 +130,12 @@ const login = async () => {
       }
     })
     Message.success('登录成功')
+    // 获取用户信息和权限
+    await userStore.getInfo()
+    // 获取参数信息
+    await userStore.getParamInfo()
+    // 刷新路由
+    await routeStore.generateRoutes()
   } catch (error) {
     errorMessage.value = (error as Error).message
   } finally {

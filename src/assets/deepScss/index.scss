@@ -1,0 +1,89 @@
+// 表格多选框，全选样式
+.arco-checkbox-checked .arco-checkbox-icon {
+  background-color: #409EFF;
+}
+
+// 表格多选框，没全选样式
+.arco-checkbox-indeterminate .arco-checkbox-icon {
+  background-color: #409EFF;
+}
+
+// 按钮样式
+.arco-btn-primary,
+.arco-btn-primary[type='button'],
+.arco-btn-primary[type='submit'] {
+  background-color: #409EFF;
+}
+
+.arco-btn-primary:hover {
+  background-color: #60b0ff !important;
+}
+
+// 分页样式
+.arco-pagination-item-active {
+  color: #fff;
+  background-color: #409EFF;
+  border: 1px solid #409EFF;
+}
+
+// 开关样式
+.arco-switch-checked {
+  background-color: #409EFF;
+}
+
+.arco-switch-type-round.arco-switch-small .arco-switch-handle {
+  border-radius: 5px;
+}
+
+.arco-switch-type-round.arco-switch-small {
+  min-width: 30px;
+  height: 16px;
+  line-height: 16px;
+  border-radius: 8px;
+}
+
+// 单选框样式
+.arco-radio-checked .arco-radio-icon {
+  background-color: #409EFF;
+  border-color: #409EFF;
+}
+
+.arco-radio-checked:hover .arco-radio-icon {
+  border-color: #409EFF;
+}
+
+.el-dialog__title {
+  font-weight: 900;
+}
+
+// .el-table__header th .cell {
+//   // color: #5c5c5c;
+//   font-size: 13px;
+//   font-weight: 600;
+// }
+
+.el-table__header th {
+  color: var(--color-text-2) !important;
+  background-color: var(--color-fill-1) !important;
+}
+
+// .el-table__header th::before {
+//   background-color: transparent;
+// }
+
+// 字节树形下拉框文字颜色
+.arco-select-view-single .arco-select-view-value {
+  color: #606266;
+}
+
+.el-card__body {
+  overflow-y: auto;
+}
+
+.el-form-item {
+  margin-right: 10px !important;
+}
+
+.demo-form-inline .el-form-item {
+  margin-bottom: 10px !important;
+}

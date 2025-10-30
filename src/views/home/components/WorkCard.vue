@@ -8,7 +8,7 @@
         <a-space size="medium">
           <a-avatar :size="68">
             <img v-if ="userStore.avatar" :src="userStore.avatar" />
-            <img v-else src="@/assets/images/logo.png" />
+            <img v-else :src="userStore.sysLogo" />
           </a-avatar>
           <div class="welcome">
             <p class="hello">

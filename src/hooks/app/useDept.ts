@@ -19,7 +19,7 @@ export function useDept(options?: { onSuccess?: () => void }) {
                 return i
             })
 
-            res.data.push({deptId: '', deptName: '全部', deptStatus: '1', deptSort: 0})
+            // res.data.push({deptId: '', deptName: '全部', deptStatus: '1', deptSort: 0})
             res.data.sort((a, b) => a.deptSort - b.deptSort)
 
             deptList.value = mapTree(res.data, (i) => {

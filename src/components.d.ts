@@ -7,6 +7,7 @@ export {}
 
 declare module 'vue' {
   export interface GlobalComponents {
+    CustomImageUpload: typeof import('./components/CustomImageUpload/index.vue')['default']
     CwrsCellAvatar: typeof import('./components/CwrsCell/CwrsCellAvatar.vue')['default']
     CwrsCellImgs: typeof import('./components/CwrsCell/CwrsCellImgs.vue')['default']
     CwrsCellTag: typeof import('./components/CwrsCell/CwrsCellTag.vue')['default']
@@ -32,8 +33,9 @@ declare module 'vue' {
     CwrsTag: typeof import('./components/CwrsTag/index.tsx')['default']
     CwrsThemeBtn: typeof import('./components/CwrsThemeBtn/index.vue')['default']
     CwrsTreeSelect: typeof import('./components/CwrsTreeSelect/index.vue')['default']
+    DeptTreeSelect: typeof import('./components/DeptTreeSelect/index.vue')['default']
+    ElUpload: typeof import('./components/el-upload/index.vue')['default']
     GiForm: typeof import('./components/CwrsForm/src/GiForm.vue')['default']
-    GwrsSplitPane: typeof import('@/components/CwrsSplitPane/index.vue')['default']
     Icon403: typeof import('./components/icons/Icon403.vue')['default']
     Icon404: typeof import('./components/icons/Icon404.vue')['default']
     Icon500: typeof import('./components/icons/Icon500.vue')['default']
@@ -41,6 +43,7 @@ declare module 'vue' {
     IconTableSize: typeof import('./components/icons/IconTableSize.vue')['default']
     IconTreeAdd: typeof import('./components/icons/IconTreeAdd.vue')['default']
     IconTreeReduce: typeof import('./components/icons/IconTreeReduce.vue')['default']
+    Pagination: typeof import('./components/Pagination/index.vue')['default']
     ParentView: typeof import('./components/ParentView/index.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']

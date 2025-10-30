@@ -17,32 +17,36 @@ let isDynamicRoutesGenerated = false
  * @param router - 路由实例
  * @param to - 目标路由
  */
-async function handleDynamicRoutes(
-    router: Router,
-    to: RouteLocationNormalized
-): Promise<{ path: string, query?: any, replace: boolean }> {
-    const userStore = useUserStore()
-    const routeStore = useRouteStore()
-
+async function handleDynamicRoutes(router: Router, to: RouteLocationNormalized): Promise<{
+    path: string,
+    query?: any,
+    replace: boolean
+}> {
     try {
-        // 获取用户信息和权限
-        await userStore.getInfo()
+        const token = getToken()
+        if (token) {
+            const userStore = useUserStore()
+            const routeStore = useRouteStore()
+            // 获取用户信息和权限
+            await userStore.getInfo()
+            await userStore.getParamInfo()
 
-        // 生成可访问的路由表
-        const accessRoutes = await routeStore.generateRoutes()
+            // 生成可访问的路由表
+            const accessRoutes = await routeStore.generateRoutes()
 
-        // 动态添加可访问路由
-        accessRoutes.forEach((route) => {
-            if (!isHttp(route.path)) {
-                router.addRoute(route)
-            }
-        })
+            // 动态添加可访问路由
+            accessRoutes.forEach((route) => {
+                if (!isHttp(route.path)) {
+                    router.addRoute(route)
+                }
+            })
 
-        // 标记动态路由已生成
-        isDynamicRoutesGenerated = true
+            // 标记动态路由已生成
+            isDynamicRoutesGenerated = true
 
-        // 确保路由添加完成后返回目标路由
-        return {...to, replace: true}
+            // 确保路由添加完成后返回目标路由
+            return {...to, replace: true}
+        }
     } catch (error) {
         // 发生错误时重置用户状态并跳转登录页
         userStore.resetToken()

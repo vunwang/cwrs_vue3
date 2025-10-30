@@ -1,8 +1,8 @@
 <template>
   <a-space fill>
     <a-avatar :size="24" shape="circle">
-      <img v-if ="props.avatar" :src="props.avatar" />
-      <img v-else src="@/assets/images/logo.png" />
+      <img v-if="props.avatar" :src="props.avatar"/>
+      <img v-else :src="userStore.sysLogo"/>
     </a-avatar>
     <a-link v-if="props.isLink" @click="emit('click')">{{ props.name }}</a-link>
     <span v-else>{{ props.name }}</span>
@@ -10,7 +10,11 @@
 </template>
 
 <script lang="ts" setup>
-defineOptions({ name: 'CwrsCellAvatar' })
+import {defineOptions} from 'vue'
+import {useUserStore} from '@/stores'
+
+const userStore = useUserStore()
+defineOptions({name: 'CwrsCellAvatar'})
 
 const props = defineProps<{
   avatar: string,
