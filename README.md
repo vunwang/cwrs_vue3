@@ -1,6 +1,6 @@
 ### 简介
 
-**cwrs_vue3** 是一个基于 Vue3、Vite、TypeScript、Arco Design Vue、Pinia、VueUse，它使用了最新的前端技术栈，内置丰富的主题配置，有着极高的代码规范。
+**cwrs_vue3** 是一个基于 Vue3、Vite、TypeScript、Arco Design Vue、Element Plus、Pinia、VueUse，它使用了最新的前端技术栈，内置丰富的主题配置，有着极高的代码规范。
 
 > Gwrs 用来定义全局组件前缀，如 GwrsNavBar、GwrsTitle、GwrsLoading
 
@@ -64,6 +64,11 @@ npm config set registry https://registry.npmjs.org/
 - 查看开发文档：暂无文档，后续补充。
 
 [//]: # (- <a href="/" target="_blank">cwrs_go_server</a>)
+
+### 演示地址
+- <a href="http://47.92.24.24:5173/#/login" target="_blank">http://47.92.24.24:5173/#/login</a>
+- 账号：admin  密码：123456
+- 账号：user  密码：123456
 
 ### 联系作者
 - QQ交流群：837701104
