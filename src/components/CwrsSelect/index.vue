@@ -8,7 +8,7 @@
       :popper-append-to-body="false"
   >
     <el-option
-        v-for="item in options"
+        v-for="item in filteredOptions"
         :key="item.itemValue"
         :value="item.itemValue"
         :label="item.itemName"
@@ -22,11 +22,15 @@ import { defineProps, defineEmits, computed } from 'vue'
 
 const props = defineProps<{
   modelValue: string
-  options: { itemName: string; itemValue: string; itemStatus?: string }[]
+  options: { itemName: string; itemValue: string; itemSelect?: string; itemStatus?: string }[]
   width?: number
   placeholder?: string
   allowSearch?: boolean
 }>()
+
+const filteredOptions = computed(() => {
+  return props.options.filter(item => item.itemSelect !== '0')
+})
 
 const emit = defineEmits<{
   (e: 'update:modelValue', value: any): void
